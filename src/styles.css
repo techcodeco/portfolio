@@ -1576,7 +1576,6 @@ body[data-theme="light"] .layer-card{background:linear-gradient(145deg,rgba(255,
 .modern-stack-eyebrow{display:flex;align-items:center;gap:9px;margin-bottom:23px;color:var(--muted);font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.22em;text-transform:uppercase}
 .modern-stack-eyebrow span{color:var(--coral);font-size:14px}
 .modern-stack-title{margin:0;font-size:clamp(58px,6vw,102px);line-height:.9;letter-spacing:-.065em;font-weight:850}
-.modern-stack-title span{color:var(--lime);text-shadow:0 0 45px rgba(212,255,63,.08)}
 .modern-stack-description{max-width:550px;margin:46px 0 38px;color:var(--muted);font-size:16px;line-height:1.9}
 .modern-stack-points{display:flex;flex-direction:column;gap:15px}
 .modern-stack-point{display:grid;grid-template-columns:42px 1fr;gap:15px;align-items:start}
@@ -2292,4 +2291,39 @@ body[data-theme="light"] .tech-card-name{color:#211935}body[data-theme="light"] 
     width:12px;
     height:12px;
   }
+}
+
+/* React Bits ParticleText integration */
+.hero-particle-title {
+  height: clamp(190px, 16vw, 270px);
+  min-height: 190px;
+  margin: -8px 0 20px;
+}
+.hero-particle-title .particle-text__canvas {
+  filter: saturate(1.08);
+}
+@media (max-width: 700px) {
+  .hero-particle-title {
+    height: 205px;
+    min-height: 205px;
+    margin: -4px 0 10px;
+  }
+}
+
+/* DepthText integration for the Modern Tools heading */
+.modern-stack-depth-title {
+  display: block;
+  font-size: 0;
+  line-height: .86;
+  letter-spacing: 0;
+}
+.modern-stack-depth-line {
+  display: inline-block;
+  font-size: initial;
+}
+.modern-stack-depth-accent {
+  color: var(--lime);
+}
+@media (max-width: 560px) {
+  .modern-stack-depth-title { line-height: .88; }
 }

@@ -55,6 +55,8 @@ import {
   SiTypescript,
 } from "react-icons/si";
 import "./styles.css";
+import ParticleText from "./components/ParticleText/ParticleText";
+import DepthText from "./components/DepthText/DepthText";
 
 const TECH = [
   ["React", 92, "Frontend", SiReact, "#61DAFB"],
@@ -177,12 +179,54 @@ const COPY = {
 };
 
 const LAYER_CARDS = [
-  { name: "React", icon: SiReact, color: "#61DAFB", kicker: "01 / INTERFACE", title: "Interfaces that think in components.", text: "Reusable UI, motion and state architecture built to stay fast as the product grows." },
-  { name: "TypeScript", icon: SiTypescript, color: "#3178C6", kicker: "02 / LANGUAGE", title: "Ideas with a type-safe shape.", text: "Strong contracts and predictable code paths for maintainable full-stack systems." },
-  { name: "Node.js", icon: SiNodedotjs, color: "#83CD29", kicker: "03 / BACKEND", title: "APIs built for real traffic.", text: "Event-driven services, clean boundaries and performance-minded request handling." },
-  { name: "Redis", icon: SiRedis, color: "#FF4D5E", kicker: "04 / DATA FLOW", title: "Speed between every layer.", text: "Caching, streams, queues and batching for responsive distributed workflows." },
-  { name: "PostgreSQL", icon: SiPostgresql, color: "#4FA8FF", kicker: "05 / DATA", title: "Data with a solid foundation.", text: "Relational modeling, indexing and reliable persistence behind the application." },
-  { name: "Docker", icon: SiDocker, color: "#2496ED", kicker: "06 / INFRA", title: "Ship the whole system.", text: "Repeatable environments and deployment-ready services from local to production." },
+  {
+    name: "React",
+    icon: SiReact,
+    color: "#61DAFB",
+    kicker: "01 / INTERFACE",
+    title: "Interfaces that think in components.",
+    text: "Reusable UI, motion and state architecture built to stay fast as the product grows.",
+  },
+  {
+    name: "TypeScript",
+    icon: SiTypescript,
+    color: "#3178C6",
+    kicker: "02 / LANGUAGE",
+    title: "Ideas with a type-safe shape.",
+    text: "Strong contracts and predictable code paths for maintainable full-stack systems.",
+  },
+  {
+    name: "Node.js",
+    icon: SiNodedotjs,
+    color: "#83CD29",
+    kicker: "03 / BACKEND",
+    title: "APIs built for real traffic.",
+    text: "Event-driven services, clean boundaries and performance-minded request handling.",
+  },
+  {
+    name: "Redis",
+    icon: SiRedis,
+    color: "#FF4D5E",
+    kicker: "04 / DATA FLOW",
+    title: "Speed between every layer.",
+    text: "Caching, streams, queues and batching for responsive distributed workflows.",
+  },
+  {
+    name: "PostgreSQL",
+    icon: SiPostgresql,
+    color: "#4FA8FF",
+    kicker: "05 / DATA",
+    title: "Data with a solid foundation.",
+    text: "Relational modeling, indexing and reliable persistence behind the application.",
+  },
+  {
+    name: "Docker",
+    icon: SiDocker,
+    color: "#2496ED",
+    kicker: "06 / INFRA",
+    title: "Ship the whole system.",
+    text: "Repeatable environments and deployment-ready services from local to production.",
+  },
 ];
 
 function App() {
@@ -287,7 +331,25 @@ function App() {
               >
                 <i /> {t.ey}
               </motion.div>
-              <SplitTitle text={t.title} />
+              <ParticleText
+                className="hero-particle-title"
+                text={t.title}
+                color={dark ? "#f3eeff" : "#17171f"}
+                highlightColor={dark ? "#d4ff3f" : "#e51f4d"}
+                particleSize={2.4}
+                density={3}
+                scatter={180}
+                gatherDuration={1600}
+                stagger={420}
+                pointerRepel={40}
+                repelRadius={120}
+                idleDrift={0.5}
+                trigger="hover"
+                fontSize="clamp(4rem, 15vw, 10rem)"
+                fontWeight={600}
+                fontFamily="inherit"
+                glow
+              />
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -362,7 +424,6 @@ function App() {
         </Reveal>
 
         <Marquee items={TECH.slice(6, 16)} />
-
 
         <Reveal>
           <section id="architecture" className="section">
@@ -441,8 +502,19 @@ function App() {
         {easter && <TerminalModal close={() => setEaster(false)} />}
       </AnimatePresence>
       <motion.div className="terminal-launch" whileHover="hover">
-        <motion.span className="terminal-label" variants={{ hover: { opacity: 1, x: 0, width: "auto", marginRight: 8 } }}>BODY TERMINAL</motion.span>
-        <button className="easter" onClick={() => setEaster(true)} aria-label="Body Terminal">
+        <motion.span
+          className="terminal-label"
+          variants={{
+            hover: { opacity: 1, x: 0, width: "auto", marginRight: 8 },
+          }}
+        >
+          BODY TERMINAL
+        </motion.span>
+        <button
+          className="easter"
+          onClick={() => setEaster(true)}
+          aria-label="Body Terminal"
+        >
           <Command size={15} />
         </button>
       </motion.div>
@@ -1095,30 +1167,88 @@ function CodeMotion3D() {
   const { scrollYProgress } = useScroll();
   const rotate = useTransform(scrollYProgress, [0.2, 0.8], [-7, 8]);
   const y = useTransform(scrollYProgress, [0.2, 0.8], [35, -45]);
-  const symbols = ["<>","{}","=>","/>","01","async","await","redis","API","∞"];
-  return <div className="code3d">
-    <motion.div className="code3d-orbit orbit-a" style={{rotateZ:rotate}}/>
-    <motion.div className="code3d-orbit orbit-b" style={{rotateZ:rotate}}/>
-    <motion.div className="code3d-scene" style={{rotateX:rotate,y}}>
-      <div className="code3d-grid"/>
-      <div className="code3d-core glass">
-        <div className="code3d-windowbar"><i/><i/><i/><span>system.ts</span></div>
-        <div className="code3d-code">
-          <span><b>const</b> developer = <strong>build</strong>({"{"}</span>
-          <span className="indent">name: <em>"Mohammad"</em>,</span>
-          <span className="indent">role: <em>"Full-Stack"</em>,</span>
-          <span className="indent">focus: [<em>"scale"</em>, <em>"speed"</em>],</span>
-          <span className="indent">mindset: <em>"keep building"</em></span>
-          <span>{"}"});</span>
-          <span className="cursorline">developer.<strong>ship</strong>();<i/></span>
+  const symbols = [
+    "<>",
+    "{}",
+    "=>",
+    "/>",
+    "01",
+    "async",
+    "await",
+    "redis",
+    "API",
+    "∞",
+  ];
+  return (
+    <div className="code3d">
+      <motion.div
+        className="code3d-orbit orbit-a"
+        style={{ rotateZ: rotate }}
+      />
+      <motion.div
+        className="code3d-orbit orbit-b"
+        style={{ rotateZ: rotate }}
+      />
+      <motion.div className="code3d-scene" style={{ rotateX: rotate, y }}>
+        <div className="code3d-grid" />
+        <div className="code3d-core glass">
+          <div className="code3d-windowbar">
+            <i />
+            <i />
+            <i />
+            <span>system.ts</span>
+          </div>
+          <div className="code3d-code">
+            <span>
+              <b>const</b> developer = <strong>build</strong>({"{"}
+            </span>
+            <span className="indent">
+              name: <em>"Mohammad"</em>,
+            </span>
+            <span className="indent">
+              role: <em>"Full-Stack"</em>,
+            </span>
+            <span className="indent">
+              focus: [<em>"scale"</em>, <em>"speed"</em>],
+            </span>
+            <span className="indent">
+              mindset: <em>"keep building"</em>
+            </span>
+            <span>{"}"});</span>
+            <span className="cursorline">
+              developer.<strong>ship</strong>();
+              <i />
+            </span>
+          </div>
         </div>
+        {symbols.map((symbol, i) => (
+          <motion.span
+            key={symbol + i}
+            className={"code3d-symbol s" + i}
+            animate={{
+              y: [0, -16, 0],
+              rotate: [0, i % 2 ? 5 : -5, 0],
+              opacity: [0.42, 0.9, 0.42],
+            }}
+            transition={{
+              duration: 3 + (i % 3),
+              repeat: Infinity,
+              delay: i * 0.18,
+              ease: "easeInOut",
+            }}
+          >
+            {symbol}
+          </motion.span>
+        ))}
+      </motion.div>
+      <div className="code3d-caption">
+        <span>
+          <i /> scroll depth
+        </span>
+        <span>runtime · architecture · persistence</span>
       </div>
-      {symbols.map((symbol,i)=><motion.span key={symbol+i} className={"code3d-symbol s"+i}
-        animate={{y:[0,-16,0],rotate:[0,i%2?5:-5,0],opacity:[.42,.9,.42]}}
-        transition={{duration:3+(i%3),repeat:Infinity,delay:i*.18,ease:"easeInOut"}}>{symbol}</motion.span>)}
-    </motion.div>
-    <div className="code3d-caption"><span><i/> scroll depth</span><span>runtime · architecture · persistence</span></div>
-  </div>;
+    </div>
+  );
 }
 function Magnetic({ children, primary = false, href, onClick }) {
   return (
@@ -1224,7 +1354,10 @@ function SystemDiagram() {
       <div className="systemflow">
         {nodes.map(([a, b, I], i) => (
           <React.Fragment key={a}>
-            <motion.div className={`node node-${i}`} whileHover={{ scale: 1.045 }}>
+            <motion.div
+              className={`node node-${i}`}
+              whileHover={{ scale: 1.045 }}
+            >
               <span className="node-energy" aria-hidden="true" />
               <I />
               <strong>{a}</strong>
@@ -1295,12 +1428,54 @@ function Project({ p, i, label }) {
 }
 
 const MODERN_TECH_STACK = [
-  { name: "React", icon: SiReact, category: "FRONTEND", color: "#61DAFB", description: "Interactive interfaces built with reusable components, state and motion." },
-  { name: "TypeScript", icon: SiTypescript, category: "LANGUAGE", color: "#3178C6", description: "Strong contracts and predictable code for maintainable full-stack systems." },
-  { name: "Node.js", icon: SiNodedotjs, category: "BACKEND", color: "#68A063", description: "Event-driven APIs and services designed for real-world traffic." },
-  { name: "Redis", icon: SiRedis, category: "CACHE / QUEUE", color: "#FF4438", description: "Fast caching, streams, queues and batching for responsive systems." },
-  { name: "PostgreSQL", icon: SiPostgresql, category: "DATABASE", color: "#4169E1", description: "Reliable relational data, indexing and persistence behind the application." },
-  { name: "Docker", icon: SiDocker, category: "INFRASTRUCTURE", color: "#2496ED", description: "Reproducible environments that move applications from local to production." },
+  {
+    name: "React",
+    icon: SiReact,
+    category: "FRONTEND",
+    color: "#61DAFB",
+    description:
+      "Interactive interfaces built with reusable components, state and motion.",
+  },
+  {
+    name: "TypeScript",
+    icon: SiTypescript,
+    category: "LANGUAGE",
+    color: "#3178C6",
+    description:
+      "Strong contracts and predictable code for maintainable full-stack systems.",
+  },
+  {
+    name: "Node.js",
+    icon: SiNodedotjs,
+    category: "BACKEND",
+    color: "#68A063",
+    description:
+      "Event-driven APIs and services designed for real-world traffic.",
+  },
+  {
+    name: "Redis",
+    icon: SiRedis,
+    category: "CACHE / QUEUE",
+    color: "#FF4438",
+    description:
+      "Fast caching, streams, queues and batching for responsive systems.",
+  },
+  {
+    name: "PostgreSQL",
+    icon: SiPostgresql,
+    category: "DATABASE",
+    color: "#4169E1",
+    description:
+      "Reliable relational data, indexing and persistence behind the application.",
+  },
+  {
+    name: "Docker",
+    icon: SiDocker,
+    category: "INFRASTRUCTURE",
+    color: "#2496ED",
+    description:
+      "Reproducible environments that move applications from local to production.",
+  },
 ];
 
 function ModernTechStack({ lang = "en" }) {
@@ -1377,8 +1552,16 @@ function ModernTechStack({ lang = "en" }) {
         titleB: "مدرن می‌سازم.",
         desc: "برای ساخت وب‌اپلیکیشن‌ها و اپلیکیشن‌های سریع، مقیاس‌پذیر و قابل نگهداری از تکنولوژی‌های مدرن استفاده می‌کنم؛ از رابط کاربری تا API، دیتابیس و زیرساخت.",
         points: [
-          ["01", "رابط‌های مدرن", "React و TypeScript برای تجربه‌های تعاملی و تمیز."],
-          ["02", "Backend پرسرعت", "API، کش، صف و پردازش همزمان برای بار واقعی."],
+          [
+            "01",
+            "رابط‌های مدرن",
+            "React و TypeScript برای تجربه‌های تعاملی و تمیز.",
+          ],
+          [
+            "02",
+            "Backend پرسرعت",
+            "API، کش، صف و پردازش همزمان برای بار واقعی.",
+          ],
           ["03", "Production Ready", "دیتابیس، کانتینر و معماری آماده رشد."],
         ],
         current: "تکنولوژی فعال",
@@ -1391,9 +1574,21 @@ function ModernTechStack({ lang = "en" }) {
         titleB: "modern tools.",
         desc: "I use modern technologies to build fast, scalable and maintainable web applications — from interactive interfaces to high-performance APIs, data layers and production infrastructure.",
         points: [
-          ["01", "Modern Interfaces", "React and TypeScript for interactive, polished experiences."],
-          ["02", "High Performance", "APIs, caching, queues and efficient data flows."],
-          ["03", "Production Ready", "Reliable databases, containers and systems built to grow."],
+          [
+            "01",
+            "Modern Interfaces",
+            "React and TypeScript for interactive, polished experiences.",
+          ],
+          [
+            "02",
+            "High Performance",
+            "APIs, caching, queues and efficient data flows.",
+          ],
+          [
+            "03",
+            "Production Ready",
+            "Reliable databases, containers and systems built to grow.",
+          ],
         ],
         current: "Currently leading",
         hint: "MOVE THE CURSOR",
@@ -1405,15 +1600,55 @@ function ModernTechStack({ lang = "en" }) {
       <div className="modern-stack-grid-bg" />
       <div className="container modern-stack-container">
         <div className="modern-stack-copy">
-          <div className="modern-stack-eyebrow"><span>//</span>{copy.kicker}</div>
-          <h2 className="modern-stack-title">{copy.titleA}<br /><span>{copy.titleB}</span></h2>
+          <div className="modern-stack-eyebrow">
+            <span>//</span>
+            {copy.kicker}
+          </div>
+          <h2 className="modern-stack-title modern-stack-depth-title">
+            <DepthText
+              text={copy.titleA}
+              layers={26}
+              depth={1.8}
+              faceColor="var(--text)"
+              depthColor="var(--violet)"
+              tilt={4.5}
+              pointerTracking
+              smoothing={0.12}
+              perspective={1000}
+              autoOrbit
+              orbitSpeed={0.18}
+              fontSize="clamp(3.5rem, 6vw, 6.4rem)"
+              fontWeight={850}
+              className="modern-stack-depth-line"
+            />
+            <br />
+            <DepthText
+              text={copy.titleB}
+              layers={26}
+              depth={1.8}
+              faceColor="var(--lime)"
+              depthColor="var(--violet)"
+              tilt={4.5}
+              pointerTracking
+              smoothing={0.12}
+              perspective={1000}
+              autoOrbit
+              orbitSpeed={0.18}
+              fontSize="clamp(3.5rem, 6vw, 6.4rem)"
+              fontWeight={850}
+              className="modern-stack-depth-line modern-stack-depth-accent"
+            />
+          </h2>
           <p className="modern-stack-description">{copy.desc}</p>
 
           <div className="modern-stack-points">
             {copy.points.map(([n, title, text]) => (
               <div className="modern-stack-point" key={n}>
                 <span className="point-number">{n}</span>
-                <div><strong>{title}</strong><span>{text}</span></div>
+                <div>
+                  <strong>{title}</strong>
+                  <span>{text}</span>
+                </div>
               </div>
             ))}
           </div>
@@ -1425,7 +1660,12 @@ function ModernTechStack({ lang = "en" }) {
           </div>
         </div>
 
-        <div className={`tech-deck ${pointer.active ? "is-interacting" : ""}`} onPointerEnter={enter} onPointerMove={move} onPointerLeave={leave}>
+        <div
+          className={`tech-deck ${pointer.active ? "is-interacting" : ""}`}
+          onPointerEnter={enter}
+          onPointerMove={move}
+          onPointerLeave={leave}
+        >
           <div className="tech-deck-glow" />
           <div className="tech-deck-orbit orbit-one" />
           <div className="tech-deck-orbit orbit-two" />
@@ -1444,24 +1684,43 @@ function ModernTechStack({ lang = "en" }) {
                   <span className="tech-card-corner" aria-hidden="true" />
 
                   <div className="tech-card-header">
-                    <span className="tech-card-index">{String(index + 1).padStart(2, "0")} <i>/</i> {tech.category}</span>
-                    <span className="tech-card-status">{isActive ? "ACTIVE" : "STACKED"}</span>
+                    <span className="tech-card-index">
+                      {String(index + 1).padStart(2, "0")} <i>/</i>{" "}
+                      {tech.category}
+                    </span>
+                    <span className="tech-card-status">
+                      {isActive ? "ACTIVE" : "STACKED"}
+                    </span>
                   </div>
 
-                  <div className="tech-card-logo" style={{ "--tech-color": tech.color }}>
+                  <div
+                    className="tech-card-logo"
+                    style={{ "--tech-color": tech.color }}
+                  >
                     <div className="tech-logo-ring" />
                     <Icon />
                     <span className="tech-logo-pulse" />
                   </div>
 
-                  <div className="tech-card-category" style={{ color: tech.color }}>{tech.category}</div>
+                  <div
+                    className="tech-card-category"
+                    style={{ color: tech.color }}
+                  >
+                    {tech.category}
+                  </div>
                   <h3 className="tech-card-name">{tech.name}</h3>
                   <p className="tech-card-description">{tech.description}</p>
 
                   <div className="tech-card-footer">
-                    <div className="tech-card-line"><span /><span /><span /></div>
+                    <div className="tech-card-line">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
                     <span className="tech-card-build">{copy.build}</span>
-                    <span className="tech-card-number">{String(index + 1).padStart(2, "0")}</span>
+                    <span className="tech-card-number">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
                   </div>
                 </motion.article>
               );
@@ -1470,7 +1729,14 @@ function ModernTechStack({ lang = "en" }) {
 
           <div className="tech-deck-controls">
             {MODERN_TECH_STACK.map((tech, index) => (
-              <button key={tech.name} className={index === active ? "is-active" : ""} onClick={() => setActive(index)} aria-label={`Show ${tech.name}`}><span /></button>
+              <button
+                key={tech.name}
+                className={index === active ? "is-active" : ""}
+                onClick={() => setActive(index)}
+                aria-label={`Show ${tech.name}`}
+              >
+                <span />
+              </button>
             ))}
           </div>
           <div className="tech-deck-hint">{copy.hint}</div>
@@ -1596,40 +1862,224 @@ function Social({ icon, label, href }) {
     </motion.a>
   );
 }
-const TERMINAL_TECH = TECH.reduce((acc, tech) => { const { name, level, category, color } = tech; acc[name.toLowerCase().replace(/[^a-z0-9]+/g,"-")] = { name, level, category, color }; return acc; }, {});
-function TerminalModal({ close }) {
-  const [cwd,setCwd]=useState([]); const [history,setHistory]=useState([]); const [input,setInput]=useState(""); const inputRef=useRef(null); const screenRef=useRef(null);
-  const path = cwd.length ? "/"+cwd.join("/") : "/root";
-  const techNames=Object.keys(TERMINAL_TECH);
-  const run=(raw)=>{
-    const cmd=raw.trim(); if(!cmd)return;
-    const parts=cmd.split(/\s+/), op=parts[0].toLowerCase(), arg=parts.slice(1).join(" ");
-    let out=[];
-    if(op==="help") out=["Available commands:","  ls              list current directory","  cd <path>       enter brain or heart","  pwd             print current path","  cat <tech>      show skill level and progress","  tree            show techcodeOS tree","  whoami          show developer profile","  time            show current system time","  neofetch        show techcodeOS system summary","  find <name>     search technologies","  echo <text>     print text","  clear           clear terminal","  help            show this help"];
-    else if(op==="clear") { setHistory([]); setInput(""); return; }
-    else if(op==="pwd") out=[path];
-    else if(op==="ls") out=cwd[0]==="brain"?techNames.map(n=>`${n}.skill`):cwd[0]==="heart"?["discipline","curiosity","hard-work","consistency"]:["brain/","heart/"];
-    else if(op==="cd") { const target=(arg||"/").replace(/^\//,"").split("/").filter(Boolean); if(!arg||arg==="/"||arg==="~") setCwd([]); else if(arg==="..") setCwd(cwd.slice(0,-1)); else if((target[0]==="brain"||target[0]==="heart") && target.length===1)setCwd(target); else out=[`cd: no such path: ${arg}`]; }
-    else if(op==="cat") { if(cwd[0]!=="brain") out=["cat: enter /brain first. Try: cd brain"]; else { const key=arg.toLowerCase().replace(/\.skill$/,''); const t=TERMINAL_TECH[key]; out=t?[`${t.name}.skill`,`category : ${t.category}`,`level    : ${t.level}%`,`status   : ${t.level>=90?"expert":"strong"}`,`progress : ${"█".repeat(Math.round(t.level/10))}${"░".repeat(10-Math.round(t.level/10))} ${t.level}%`]:["cat: technology not found. Try ls"]; } }
-    else if(op==="whoami") out=["Mohammad Afrwzeh","Full-Stack Developer","Focus: scalable systems, high-performance APIs, clean architecture","github: github.com/techcodeco"];
-    else if(op==="time") out=[new Date().toLocaleString(undefined,{hour12:false})];
-    else if(op==="neofetch") out=["techcodeOS v6.0","────────────────────────","OS       techcodeOS","USER     techcode","SHELL    body-terminal","ROLE     Full-Stack Developer",`BRAIN    ${techNames.length} technologies`,"HEART    discipline + curiosity","STATUS   ONLINE ♥","BP       120/80 mmHg","HR       72 bpm","LOAD     building..."];
-    else if(op==="tree") out=["/root","├── brain/","│   ├── "+techNames.slice(0,5).map(n=>n+".skill").join("\n│   ├── "),"│   └── ...","└── heart/","    ├── discipline","    ├── curiosity","    ├── hard-work","    └── consistency"];
-    else if(op==="find") out=techNames.filter(n=>n.includes(arg.toLowerCase())).map(n=>`/brain/${n}.skill`); else if(op==="echo") out=[arg]; else out=[`${op}: command not found. Type 'help'.`];
-    setHistory(h=>[...h,{cmd,out,path}]); setInput("");
-    requestAnimationFrame(()=>{if(screenRef.current)screenRef.current.scrollTop=screenRef.current.scrollHeight});
+const TERMINAL_TECH = TECH.reduce((acc, tech) => {
+  const { name, level, category, color } = tech;
+  acc[name.toLowerCase().replace(/[^a-z0-9]+/g, "-")] = {
+    name,
+    level,
+    category,
+    color,
   };
-  useEffect(()=>inputRef.current?.focus(),[]);
-  return <motion.div className="modal terminal-modal" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={close}>
-    <motion.div className="body-terminal" initial={{scale:.92,y:25}} animate={{scale:1,y:0}} onClick={e=>e.stopPropagation()}>
-      <div className="terminal-head"><div className="terminal-title"><span className="pulse"/> techcodeOS <b>::</b> body-terminal</div><div className="terminal-vitals"><span>♥ 72 bpm</span><span>BP 120/80</span><span>USER techcode</span><button onClick={close}><X size={15}/></button></div></div>
-      <div className="terminal-screen" ref={screenRef} onClick={()=>inputRef.current?.focus()}>
-        <div className="bootline">techcodeOS v6.0 — body terminal initialized</div><div className="bootline">heartbeat stable · pressure nominal · brain mounted at /brain · heart mounted at /heart</div><div className="bootline">Type <b>help</b> to begin.</div>
-        {history.map((h,i)=><div className="term-entry" key={i}><div><span className="prompt">techcode@root</span><span className="path">:{h.path}</span> <b>$</b> {h.cmd}</div>{h.out.map((line,j)=><div key={j} className={line.includes("level")||line.includes("progress")?"term-accent":"term-out"}>{line}</div>)}</div>)}
-        <div className="term-input"><span className="prompt">techcode@root</span><span className="path">:{path}</span><b> $</b><input ref={inputRef} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")run(input);}} autoComplete="off" spellCheck="false" /></div>
-      </div>
-      <div className="terminal-footer"><span>techcodeOS</span><span>brain {techNames.length} skills</span><span>heart online</span><span>dracula theme</span></div>
+  return acc;
+}, {});
+function TerminalModal({ close }) {
+  const [cwd, setCwd] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [input, setInput] = useState("");
+  const inputRef = useRef(null);
+  const screenRef = useRef(null);
+  const path = cwd.length ? "/" + cwd.join("/") : "/root";
+  const techNames = Object.keys(TERMINAL_TECH);
+  const run = (raw) => {
+    const cmd = raw.trim();
+    if (!cmd) return;
+    const parts = cmd.split(/\s+/),
+      op = parts[0].toLowerCase(),
+      arg = parts.slice(1).join(" ");
+    let out = [];
+    if (op === "help")
+      out = [
+        "Available commands:",
+        "  ls              list current directory",
+        "  cd <path>       enter brain or heart",
+        "  pwd             print current path",
+        "  cat <tech>      show skill level and progress",
+        "  tree            show techcodeOS tree",
+        "  whoami          show developer profile",
+        "  time            show current system time",
+        "  neofetch        show techcodeOS system summary",
+        "  find <name>     search technologies",
+        "  echo <text>     print text",
+        "  clear           clear terminal",
+        "  help            show this help",
+      ];
+    else if (op === "clear") {
+      setHistory([]);
+      setInput("");
+      return;
+    } else if (op === "pwd") out = [path];
+    else if (op === "ls")
+      out =
+        cwd[0] === "brain"
+          ? techNames.map((n) => `${n}.skill`)
+          : cwd[0] === "heart"
+            ? ["discipline", "curiosity", "hard-work", "consistency"]
+            : ["brain/", "heart/"];
+    else if (op === "cd") {
+      const target = (arg || "/").replace(/^\//, "").split("/").filter(Boolean);
+      if (!arg || arg === "/" || arg === "~") setCwd([]);
+      else if (arg === "..") setCwd(cwd.slice(0, -1));
+      else if (
+        (target[0] === "brain" || target[0] === "heart") &&
+        target.length === 1
+      )
+        setCwd(target);
+      else out = [`cd: no such path: ${arg}`];
+    } else if (op === "cat") {
+      if (cwd[0] !== "brain") out = ["cat: enter /brain first. Try: cd brain"];
+      else {
+        const key = arg.toLowerCase().replace(/\.skill$/, "");
+        const t = TERMINAL_TECH[key];
+        out = t
+          ? [
+              `${t.name}.skill`,
+              `category : ${t.category}`,
+              `level    : ${t.level}%`,
+              `status   : ${t.level >= 90 ? "expert" : "strong"}`,
+              `progress : ${"█".repeat(Math.round(t.level / 10))}${"░".repeat(10 - Math.round(t.level / 10))} ${t.level}%`,
+            ]
+          : ["cat: technology not found. Try ls"];
+      }
+    } else if (op === "whoami")
+      out = [
+        "Mohammad Afrwzeh",
+        "Full-Stack Developer",
+        "Focus: scalable systems, high-performance APIs, clean architecture",
+        "github: github.com/techcodeco",
+      ];
+    else if (op === "time")
+      out = [new Date().toLocaleString(undefined, { hour12: false })];
+    else if (op === "neofetch")
+      out = [
+        "techcodeOS v6.0",
+        "────────────────────────",
+        "OS       techcodeOS",
+        "USER     techcode",
+        "SHELL    body-terminal",
+        "ROLE     Full-Stack Developer",
+        `BRAIN    ${techNames.length} technologies`,
+        "HEART    discipline + curiosity",
+        "STATUS   ONLINE ♥",
+        "BP       120/80 mmHg",
+        "HR       72 bpm",
+        "LOAD     building...",
+      ];
+    else if (op === "tree")
+      out = [
+        "/root",
+        "├── brain/",
+        "│   ├── " +
+          techNames
+            .slice(0, 5)
+            .map((n) => n + ".skill")
+            .join("\n│   ├── "),
+        "│   └── ...",
+        "└── heart/",
+        "    ├── discipline",
+        "    ├── curiosity",
+        "    ├── hard-work",
+        "    └── consistency",
+      ];
+    else if (op === "find")
+      out = techNames
+        .filter((n) => n.includes(arg.toLowerCase()))
+        .map((n) => `/brain/${n}.skill`);
+    else if (op === "echo") out = [arg];
+    else out = [`${op}: command not found. Type 'help'.`];
+    setHistory((h) => [...h, { cmd, out, path }]);
+    setInput("");
+    requestAnimationFrame(() => {
+      if (screenRef.current)
+        screenRef.current.scrollTop = screenRef.current.scrollHeight;
+    });
+  };
+  useEffect(() => inputRef.current?.focus(), []);
+  return (
+    <motion.div
+      className="modal terminal-modal"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={close}
+    >
+      <motion.div
+        className="body-terminal"
+        initial={{ scale: 0.92, y: 25 }}
+        animate={{ scale: 1, y: 0 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="terminal-head">
+          <div className="terminal-title">
+            <span className="pulse" /> techcodeOS <b>::</b> body-terminal
+          </div>
+          <div className="terminal-vitals">
+            <span>♥ 72 bpm</span>
+            <span>BP 120/80</span>
+            <span>USER techcode</span>
+            <button onClick={close}>
+              <X size={15} />
+            </button>
+          </div>
+        </div>
+        <div
+          className="terminal-screen"
+          ref={screenRef}
+          onClick={() => inputRef.current?.focus()}
+        >
+          <div className="bootline">
+            techcodeOS v6.0 — body terminal initialized
+          </div>
+          <div className="bootline">
+            heartbeat stable · pressure nominal · brain mounted at /brain ·
+            heart mounted at /heart
+          </div>
+          <div className="bootline">
+            Type <b>help</b> to begin.
+          </div>
+          {history.map((h, i) => (
+            <div className="term-entry" key={i}>
+              <div>
+                <span className="prompt">techcode@root</span>
+                <span className="path">:{h.path}</span> <b>$</b> {h.cmd}
+              </div>
+              {h.out.map((line, j) => (
+                <div
+                  key={j}
+                  className={
+                    line.includes("level") || line.includes("progress")
+                      ? "term-accent"
+                      : "term-out"
+                  }
+                >
+                  {line}
+                </div>
+              ))}
+            </div>
+          ))}
+          <div className="term-input">
+            <span className="prompt">techcode@root</span>
+            <span className="path">:{path}</span>
+            <b> $</b>
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") run(input);
+              }}
+              autoComplete="off"
+              spellCheck="false"
+            />
+          </div>
+        </div>
+        <div className="terminal-footer">
+          <span>techcodeOS</span>
+          <span>brain {techNames.length} skills</span>
+          <span>heart online</span>
+          <span>dracula theme</span>
+        </div>
+      </motion.div>
     </motion.div>
-  </motion.div>
+  );
 }
 createRoot(document.getElementById("root")).render(<App />);
