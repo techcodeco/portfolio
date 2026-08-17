@@ -176,12 +176,22 @@ const COPY = {
   },
 };
 
+const LAYER_CARDS = [
+  { name: "React", icon: SiReact, color: "#61DAFB", kicker: "01 / INTERFACE", title: "Interfaces that think in components.", text: "Reusable UI, motion and state architecture built to stay fast as the product grows." },
+  { name: "TypeScript", icon: SiTypescript, color: "#3178C6", kicker: "02 / LANGUAGE", title: "Ideas with a type-safe shape.", text: "Strong contracts and predictable code paths for maintainable full-stack systems." },
+  { name: "Node.js", icon: SiNodedotjs, color: "#83CD29", kicker: "03 / BACKEND", title: "APIs built for real traffic.", text: "Event-driven services, clean boundaries and performance-minded request handling." },
+  { name: "Redis", icon: SiRedis, color: "#FF4D5E", kicker: "04 / DATA FLOW", title: "Speed between every layer.", text: "Caching, streams, queues and batching for responsive distributed workflows." },
+  { name: "PostgreSQL", icon: SiPostgresql, color: "#4FA8FF", kicker: "05 / DATA", title: "Data with a solid foundation.", text: "Relational modeling, indexing and reliable persistence behind the application." },
+  { name: "Docker", icon: SiDocker, color: "#2496ED", kicker: "06 / INFRA", title: "Ship the whole system.", text: "Repeatable environments and deployment-ready services from local to production." },
+];
+
 function App() {
   const [lang, setLang] = useState("en"),
     [dark, setDark] = useState(true),
     [menu, setMenu] = useState(false),
     [loaded, setLoaded] = useState(false),
     [easter, setEaster] = useState(false);
+
   const t = COPY[lang],
     rtl = lang === "fa",
     reduce = useReducedMotion();
@@ -316,6 +326,8 @@ function App() {
 
         <Marquee items={TECH.slice(0, 10)} reverse />
 
+        <ModernTechStack lang={lang} />
+
         <Reveal>
           <section id="about" className="section">
             <div className="container about">
@@ -350,6 +362,7 @@ function App() {
         </Reveal>
 
         <Marquee items={TECH.slice(6, 16)} />
+
 
         <Reveal>
           <section id="architecture" className="section">
@@ -427,13 +440,12 @@ function App() {
       <AnimatePresence>
         {easter && <TerminalModal close={() => setEaster(false)} />}
       </AnimatePresence>
-      <button
-        className="easter"
-        onClick={() => setEaster(true)}
-        aria-label="Terminal"
-      >
-        <Command size={15} />
-      </button>
+      <motion.div className="terminal-launch" whileHover="hover">
+        <motion.span className="terminal-label" variants={{ hover: { opacity: 1, x: 0, width: "auto", marginRight: 8 } }}>BODY TERMINAL</motion.span>
+        <button className="easter" onClick={() => setEaster(true)} aria-label="Body Terminal">
+          <Command size={15} />
+        </button>
+      </motion.div>
     </div>
   );
 }
@@ -1079,6 +1091,35 @@ function CodeEditor() {
     </motion.div>
   );
 }
+function CodeMotion3D() {
+  const { scrollYProgress } = useScroll();
+  const rotate = useTransform(scrollYProgress, [0.2, 0.8], [-7, 8]);
+  const y = useTransform(scrollYProgress, [0.2, 0.8], [35, -45]);
+  const symbols = ["<>","{}","=>","/>","01","async","await","redis","API","∞"];
+  return <div className="code3d">
+    <motion.div className="code3d-orbit orbit-a" style={{rotateZ:rotate}}/>
+    <motion.div className="code3d-orbit orbit-b" style={{rotateZ:rotate}}/>
+    <motion.div className="code3d-scene" style={{rotateX:rotate,y}}>
+      <div className="code3d-grid"/>
+      <div className="code3d-core glass">
+        <div className="code3d-windowbar"><i/><i/><i/><span>system.ts</span></div>
+        <div className="code3d-code">
+          <span><b>const</b> developer = <strong>build</strong>({"{"}</span>
+          <span className="indent">name: <em>"Mohammad"</em>,</span>
+          <span className="indent">role: <em>"Full-Stack"</em>,</span>
+          <span className="indent">focus: [<em>"scale"</em>, <em>"speed"</em>],</span>
+          <span className="indent">mindset: <em>"keep building"</em></span>
+          <span>{"}"});</span>
+          <span className="cursorline">developer.<strong>ship</strong>();<i/></span>
+        </div>
+      </div>
+      {symbols.map((symbol,i)=><motion.span key={symbol+i} className={"code3d-symbol s"+i}
+        animate={{y:[0,-16,0],rotate:[0,i%2?5:-5,0],opacity:[.42,.9,.42]}}
+        transition={{duration:3+(i%3),repeat:Infinity,delay:i*.18,ease:"easeInOut"}}>{symbol}</motion.span>)}
+    </motion.div>
+    <div className="code3d-caption"><span><i/> scroll depth</span><span>runtime · architecture · persistence</span></div>
+  </div>;
+}
 function Magnetic({ children, primary = false, href, onClick }) {
   return (
     <motion.a
@@ -1183,14 +1224,17 @@ function SystemDiagram() {
       <div className="systemflow">
         {nodes.map(([a, b, I], i) => (
           <React.Fragment key={a}>
-            <motion.div className="node" whileHover={{ scale: 1.05 }}>
+            <motion.div className={`node node-${i}`} whileHover={{ scale: 1.045 }}>
+              <span className="node-energy" aria-hidden="true" />
               <I />
               <strong>{a}</strong>
               <small>{b}</small>
             </motion.div>
             {i < nodes.length - 1 && (
-              <div className="flow">
+              <div className={`flow flow-${i}`} aria-hidden="true">
                 <i />
+                <b />
+                <em />
               </div>
             )}
           </React.Fragment>
@@ -1247,6 +1291,192 @@ function Project({ p, i, label }) {
         </a>
       </div>
     </motion.article>
+  );
+}
+
+const MODERN_TECH_STACK = [
+  { name: "React", icon: SiReact, category: "FRONTEND", color: "#61DAFB", description: "Interactive interfaces built with reusable components, state and motion." },
+  { name: "TypeScript", icon: SiTypescript, category: "LANGUAGE", color: "#3178C6", description: "Strong contracts and predictable code for maintainable full-stack systems." },
+  { name: "Node.js", icon: SiNodedotjs, category: "BACKEND", color: "#68A063", description: "Event-driven APIs and services designed for real-world traffic." },
+  { name: "Redis", icon: SiRedis, category: "CACHE / QUEUE", color: "#FF4438", description: "Fast caching, streams, queues and batching for responsive systems." },
+  { name: "PostgreSQL", icon: SiPostgresql, category: "DATABASE", color: "#4169E1", description: "Reliable relational data, indexing and persistence behind the application." },
+  { name: "Docker", icon: SiDocker, category: "INFRASTRUCTURE", color: "#2496ED", description: "Reproducible environments that move applications from local to production." },
+];
+
+function ModernTechStack({ lang = "en" }) {
+  const [active, setActive] = useState(0);
+  const [pointer, setPointer] = useState({ x: 0.5, y: 0.5, active: false });
+  const reduce = useReducedMotion();
+
+  useEffect(() => {
+    if (reduce) return;
+    const timer = window.setInterval(() => {
+      setActive((current) => (current + 1) % MODERN_TECH_STACK.length);
+    }, 2500);
+    return () => window.clearInterval(timer);
+  }, [reduce]);
+
+  const move = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setPointer({
+      x: Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width)),
+      y: Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height)),
+      active: true,
+    });
+  };
+
+  const enter = () => {};
+  const leave = () => {
+    setPointer({ x: 0.5, y: 0.5, active: false });
+  };
+
+  const cardStyle = (index) => {
+    const total = MODERN_TECH_STACK.length;
+    const depth = (index - active + total) % total;
+    const dir = document.documentElement.dir === "rtl" ? -1 : 1;
+
+    // Physical deck: cards sit on top of each other. The cards behind
+    // the active one move slightly UP and toward the outside edge so the
+    // lower corner of every card remains visible without separating the deck.
+    const stepX = 11;
+    const stepY = 9;
+    const baseX = -depth * stepX * dir;
+    const baseY = -depth * stepY;
+    const baseRotate = depth * (dir === 1 ? -0.72 : 0.72);
+
+    // Very small magnetic response. Only the front card moves noticeably;
+    // the rest of the deck follows by a fraction so the stack never breaks.
+    const px = pointer.active ? (pointer.x - 0.5) * 2 : 0;
+    const py = pointer.active ? (pointer.y - 0.5) * 2 : 0;
+    const lead = depth === 0;
+    const influence = lead ? 1 : Math.max(0.08, 0.34 - depth * 0.055);
+
+    const magnetX = px * 10 * influence;
+    const magnetY = py * 7 * influence;
+    const rx = -py * (lead ? 2.2 : 0.35) * influence;
+    const ry = px * (lead ? 2.8 : 0.45) * influence;
+    const rz = baseRotate + px * (lead ? 1.1 : 0.12) * influence;
+
+    return {
+      "--card-x": `${baseX + magnetX}px`,
+      "--card-y": `${baseY + magnetY}px`,
+      "--card-rx": `${rx}deg`,
+      "--card-ry": `${ry}deg`,
+      "--card-rz": `${rz}deg`,
+      "--card-scale": lead ? (pointer.active ? 1.012 : 1) : 1,
+      zIndex: total - depth,
+      opacity: 1,
+    };
+  };
+
+  const fa = lang === "fa";
+  const copy = fa
+    ? {
+        kicker: "تکنولوژی‌های مدرن",
+        titleA: "با ابزارهای",
+        titleB: "مدرن می‌سازم.",
+        desc: "برای ساخت وب‌اپلیکیشن‌ها و اپلیکیشن‌های سریع، مقیاس‌پذیر و قابل نگهداری از تکنولوژی‌های مدرن استفاده می‌کنم؛ از رابط کاربری تا API، دیتابیس و زیرساخت.",
+        points: [
+          ["01", "رابط‌های مدرن", "React و TypeScript برای تجربه‌های تعاملی و تمیز."],
+          ["02", "Backend پرسرعت", "API، کش، صف و پردازش همزمان برای بار واقعی."],
+          ["03", "Production Ready", "دیتابیس، کانتینر و معماری آماده رشد."],
+        ],
+        current: "تکنولوژی فعال",
+        hint: "ماوس را حرکت بده",
+        build: "BUILD / SHIP / SCALE",
+      }
+    : {
+        kicker: "MODERN TECHNOLOGY",
+        titleA: "Built with",
+        titleB: "modern tools.",
+        desc: "I use modern technologies to build fast, scalable and maintainable web applications — from interactive interfaces to high-performance APIs, data layers and production infrastructure.",
+        points: [
+          ["01", "Modern Interfaces", "React and TypeScript for interactive, polished experiences."],
+          ["02", "High Performance", "APIs, caching, queues and efficient data flows."],
+          ["03", "Production Ready", "Reliable databases, containers and systems built to grow."],
+        ],
+        current: "Currently leading",
+        hint: "MOVE THE CURSOR",
+        build: "BUILD / SHIP / SCALE",
+      };
+
+  return (
+    <section id="modern-stack" className="modern-stack-section">
+      <div className="modern-stack-grid-bg" />
+      <div className="container modern-stack-container">
+        <div className="modern-stack-copy">
+          <div className="modern-stack-eyebrow"><span>//</span>{copy.kicker}</div>
+          <h2 className="modern-stack-title">{copy.titleA}<br /><span>{copy.titleB}</span></h2>
+          <p className="modern-stack-description">{copy.desc}</p>
+
+          <div className="modern-stack-points">
+            {copy.points.map(([n, title, text]) => (
+              <div className="modern-stack-point" key={n}>
+                <span className="point-number">{n}</span>
+                <div><strong>{title}</strong><span>{text}</span></div>
+              </div>
+            ))}
+          </div>
+
+          <div className="modern-stack-active-tech">
+            <span className="active-tech-dot" />
+            <span>{copy.current}</span>
+            <strong>{MODERN_TECH_STACK[active].name}</strong>
+          </div>
+        </div>
+
+        <div className={`tech-deck ${pointer.active ? "is-interacting" : ""}`} onPointerEnter={enter} onPointerMove={move} onPointerLeave={leave}>
+          <div className="tech-deck-glow" />
+          <div className="tech-deck-orbit orbit-one" />
+          <div className="tech-deck-orbit orbit-two" />
+
+          <div className="tech-deck-cards">
+            {MODERN_TECH_STACK.map((tech, index) => {
+              const Icon = tech.icon;
+              const isActive = index === active;
+              return (
+                <motion.article
+                  key={tech.name}
+                  className={`tech-deck-card ${isActive ? "is-active" : ""}`}
+                  style={cardStyle(index)}
+                  onClick={() => setActive(index)}
+                >
+                  <span className="tech-card-corner" aria-hidden="true" />
+
+                  <div className="tech-card-header">
+                    <span className="tech-card-index">{String(index + 1).padStart(2, "0")} <i>/</i> {tech.category}</span>
+                    <span className="tech-card-status">{isActive ? "ACTIVE" : "STACKED"}</span>
+                  </div>
+
+                  <div className="tech-card-logo" style={{ "--tech-color": tech.color }}>
+                    <div className="tech-logo-ring" />
+                    <Icon />
+                    <span className="tech-logo-pulse" />
+                  </div>
+
+                  <div className="tech-card-category" style={{ color: tech.color }}>{tech.category}</div>
+                  <h3 className="tech-card-name">{tech.name}</h3>
+                  <p className="tech-card-description">{tech.description}</p>
+
+                  <div className="tech-card-footer">
+                    <div className="tech-card-line"><span /><span /><span /></div>
+                    <span className="tech-card-build">{copy.build}</span>
+                    <span className="tech-card-number">{String(index + 1).padStart(2, "0")}</span>
+                  </div>
+                </motion.article>
+              );
+            })}
+          </div>
+
+          <div className="tech-deck-controls">
+            {MODERN_TECH_STACK.map((tech, index) => (
+              <button key={tech.name} className={index === active ? "is-active" : ""} onClick={() => setActive(index)} aria-label={`Show ${tech.name}`}><span /></button>
+            ))}
+          </div>
+          <div className="tech-deck-hint">{copy.hint}</div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -1366,63 +1596,40 @@ function Social({ icon, label, href }) {
     </motion.a>
   );
 }
+const TERMINAL_TECH = TECH.reduce((acc, tech) => { const { name, level, category, color } = tech; acc[name.toLowerCase().replace(/[^a-z0-9]+/g,"-")] = { name, level, category, color }; return acc; }, {});
 function TerminalModal({ close }) {
-  const [text, setText] = useState("");
-  const [ok, setOk] = useState(false);
-  const line = "whoami";
-  return (
-    <motion.div
-      className="modal"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={close}
-    >
-      <motion.div
-        className="modalterminal"
-        initial={{ scale: 0.9, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button onClick={close}>
-          <X />
-        </button>
-        <div className="prompt">
-          techcodeco@system:~$ <span>{text}</span>
-          <i />
-        </div>
-        <div className="output">
-          {text === line && (
-            <>
-              <p>techcodeco</p>
-              <p>Full-Stack Developer</p>
-              <p>building scalable systems.</p>
-            </>
-          )}
-          {ok && (
-            <p className="green">
-              ✓ copied: “Code is my art, logic is my canvas.”
-            </p>
-          )}
-        </div>
-        <div className="terminalbuttons">
-          <button
-            onClick={() => {
-              navigator.clipboard?.writeText(
-                "Code is my art, logic is my canvas.",
-              );
-              setOk(true);
-            }}
-          >
-            <Copy size={14} /> copy philosophy
-          </button>
-          <button onClick={() => setText(line)}>
-            <Terminal size={14} /> run whoami
-          </button>
-        </div>
-      </motion.div>
+  const [cwd,setCwd]=useState([]); const [history,setHistory]=useState([]); const [input,setInput]=useState(""); const inputRef=useRef(null); const screenRef=useRef(null);
+  const path = cwd.length ? "/"+cwd.join("/") : "/root";
+  const techNames=Object.keys(TERMINAL_TECH);
+  const run=(raw)=>{
+    const cmd=raw.trim(); if(!cmd)return;
+    const parts=cmd.split(/\s+/), op=parts[0].toLowerCase(), arg=parts.slice(1).join(" ");
+    let out=[];
+    if(op==="help") out=["Available commands:","  ls              list current directory","  cd <path>       enter brain or heart","  pwd             print current path","  cat <tech>      show skill level and progress","  tree            show techcodeOS tree","  whoami          show developer profile","  time            show current system time","  neofetch        show techcodeOS system summary","  find <name>     search technologies","  echo <text>     print text","  clear           clear terminal","  help            show this help"];
+    else if(op==="clear") { setHistory([]); setInput(""); return; }
+    else if(op==="pwd") out=[path];
+    else if(op==="ls") out=cwd[0]==="brain"?techNames.map(n=>`${n}.skill`):cwd[0]==="heart"?["discipline","curiosity","hard-work","consistency"]:["brain/","heart/"];
+    else if(op==="cd") { const target=(arg||"/").replace(/^\//,"").split("/").filter(Boolean); if(!arg||arg==="/"||arg==="~") setCwd([]); else if(arg==="..") setCwd(cwd.slice(0,-1)); else if((target[0]==="brain"||target[0]==="heart") && target.length===1)setCwd(target); else out=[`cd: no such path: ${arg}`]; }
+    else if(op==="cat") { if(cwd[0]!=="brain") out=["cat: enter /brain first. Try: cd brain"]; else { const key=arg.toLowerCase().replace(/\.skill$/,''); const t=TERMINAL_TECH[key]; out=t?[`${t.name}.skill`,`category : ${t.category}`,`level    : ${t.level}%`,`status   : ${t.level>=90?"expert":"strong"}`,`progress : ${"█".repeat(Math.round(t.level/10))}${"░".repeat(10-Math.round(t.level/10))} ${t.level}%`]:["cat: technology not found. Try ls"]; } }
+    else if(op==="whoami") out=["Mohammad Afrwzeh","Full-Stack Developer","Focus: scalable systems, high-performance APIs, clean architecture","github: github.com/techcodeco"];
+    else if(op==="time") out=[new Date().toLocaleString(undefined,{hour12:false})];
+    else if(op==="neofetch") out=["techcodeOS v6.0","────────────────────────","OS       techcodeOS","USER     techcode","SHELL    body-terminal","ROLE     Full-Stack Developer",`BRAIN    ${techNames.length} technologies`,"HEART    discipline + curiosity","STATUS   ONLINE ♥","BP       120/80 mmHg","HR       72 bpm","LOAD     building..."];
+    else if(op==="tree") out=["/root","├── brain/","│   ├── "+techNames.slice(0,5).map(n=>n+".skill").join("\n│   ├── "),"│   └── ...","└── heart/","    ├── discipline","    ├── curiosity","    ├── hard-work","    └── consistency"];
+    else if(op==="find") out=techNames.filter(n=>n.includes(arg.toLowerCase())).map(n=>`/brain/${n}.skill`); else if(op==="echo") out=[arg]; else out=[`${op}: command not found. Type 'help'.`];
+    setHistory(h=>[...h,{cmd,out,path}]); setInput("");
+    requestAnimationFrame(()=>{if(screenRef.current)screenRef.current.scrollTop=screenRef.current.scrollHeight});
+  };
+  useEffect(()=>inputRef.current?.focus(),[]);
+  return <motion.div className="modal terminal-modal" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={close}>
+    <motion.div className="body-terminal" initial={{scale:.92,y:25}} animate={{scale:1,y:0}} onClick={e=>e.stopPropagation()}>
+      <div className="terminal-head"><div className="terminal-title"><span className="pulse"/> techcodeOS <b>::</b> body-terminal</div><div className="terminal-vitals"><span>♥ 72 bpm</span><span>BP 120/80</span><span>USER techcode</span><button onClick={close}><X size={15}/></button></div></div>
+      <div className="terminal-screen" ref={screenRef} onClick={()=>inputRef.current?.focus()}>
+        <div className="bootline">techcodeOS v6.0 — body terminal initialized</div><div className="bootline">heartbeat stable · pressure nominal · brain mounted at /brain · heart mounted at /heart</div><div className="bootline">Type <b>help</b> to begin.</div>
+        {history.map((h,i)=><div className="term-entry" key={i}><div><span className="prompt">techcode@root</span><span className="path">:{h.path}</span> <b>$</b> {h.cmd}</div>{h.out.map((line,j)=><div key={j} className={line.includes("level")||line.includes("progress")?"term-accent":"term-out"}>{line}</div>)}</div>)}
+        <div className="term-input"><span className="prompt">techcode@root</span><span className="path">:{path}</span><b> $</b><input ref={inputRef} value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")run(input);}} autoComplete="off" spellCheck="false" /></div>
+      </div>
+      <div className="terminal-footer"><span>techcodeOS</span><span>brain {techNames.length} skills</span><span>heart online</span><span>dracula theme</span></div>
     </motion.div>
-  );
+  </motion.div>
 }
-
 createRoot(document.getElementById("root")).render(<App />);
