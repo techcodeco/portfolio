@@ -229,6 +229,70 @@ const LAYER_CARDS = [
   },
 ];
 
+
+function PoweredBy() {
+  const nodes = [
+    { name: "React", color: "#61DAFB", x: 54, y: 58, pin: [360, 118], path: "M 54 58 H 125 V 82 H 220 V 101 H 300 V 118 H 360" },
+    { name: "JavaScript", color: "#F7DF1E", x: 54, y: 145, pin: [360, 145], path: "M 54 145 H 145 V 132 H 235 V 145 H 360" },
+    { name: "TypeScript", color: "#3178C6", x: 54, y: 232, pin: [360, 172], path: "M 54 232 H 125 V 214 H 205 V 190 H 280 V 172 H 360" },
+    { name: "Node.js", color: "#83CD29", x: 54, y: 305, pin: [360, 198], path: "M 54 305 H 105 V 278 H 175 V 250 H 255 V 220 H 360 V 198" },
+    { name: "Redis", color: "#FF4D5E", x: 837, y: 58, pin: [531, 118], path: "M 837 58 H 766 V 82 H 680 V 101 H 600 V 118 H 531" },
+    { name: "PostgreSQL", color: "#4FA8FF", x: 837, y: 145, pin: [531, 145], path: "M 837 145 H 745 V 132 H 655 V 145 H 531" },
+    { name: "Docker", color: "#2496ED", x: 837, y: 232, pin: [531, 172], path: "M 837 232 H 766 V 214 H 685 V 190 H 605 V 172 H 531" },
+    { name: "CSS", color: "#06B6D4", x: 837, y: 305, pin: [531, 198], path: "M 837 305 H 785 V 278 H 715 V 250 H 635 V 220 H 531 V 198" },
+  ];
+
+  return (
+    <section className="powered-section" aria-labelledby="powered-title">
+      <div className="container">
+        <Reveal>
+          <div className="powered-heading">
+            <div><div className="kicker"><span>//</span> POWERED BY</div><h2 id="powered-title">Built from the inside out.</h2></div>
+            <p>A small look at the technologies wired into the systems I build.</p>
+          </div>
+        </Reveal>
+
+        <div className="powered-board glass">
+          <div className="powered-grid" aria-hidden="true" />
+          <svg className="powered-svg" viewBox="0 0 891 330" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Technologies connected to a central technology core">
+            <defs>
+              <filter id="powered-glow"><feGaussianBlur stdDeviation="2.8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+
+            {nodes.map((node, index) => (
+              <g key={node.name} style={{ "--route-color": node.color, "--route-delay": `${index * 0.7}s` }}>
+                <path d={node.path} className="powered-route-base" />
+                <path d={node.path} className="powered-route-pulse" pathLength="1" />
+                <circle cx={node.x} cy={node.y} r="4" className="powered-tech-dot" style={{ fill: node.color }} />
+                <circle cx={node.x} cy={node.y} r="8" className="powered-tech-ring" style={{ stroke: node.color }} />
+                <text x={node.x + (node.x < 400 ? 16 : -16)} y={node.y + 4} textAnchor={node.x < 400 ? "start" : "end"} className="powered-tech-label">{node.name}</text>
+              </g>
+            ))}
+
+            <g className="powered-chip-svg">
+              <rect x="360" y="96" width="171" height="88" rx="14" />
+              <rect x="376" y="111" width="139" height="58" rx="9" />
+              <g className="chip-pins">
+                <path d="M 344 118 H 360"/><path d="M 344 145 H 360"/><path d="M 344 172 H 360"/><path d="M 344 198 H 360"/>
+                <path d="M 531 118 H 547"/><path d="M 531 145 H 547"/><path d="M 531 172 H 547"/><path d="M 531 198 H 547"/>
+              </g>
+              <g className="chip-pin-dots">
+                {[118,145,172,198].map(y => <circle key={`l${y}`} cx="360" cy={y} r="3" />)}
+                {[118,145,172,198].map(y => <circle key={`r${y}`} cx="531" cy={y} r="3" />)}
+              </g>
+              <text x="445.5" y="130" textAnchor="middle">TC / CORE</text>
+              <text x="445.5" y="150" textAnchor="middle" className="chip-main">TECHCODE</text>
+              <text x="445.5" y="163" textAnchor="middle" className="chip-status">SYSTEM // ONLINE</text>
+              <circle cx="500" cy="156" r="3" />
+            </g>
+          </svg>
+          <div className="powered-status"><span><i/> SIGNAL FLOW ACTIVE</span><span>8 TECHNOLOGIES // 1 SYSTEM</span></div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const [lang, setLang] = useState("en"),
     [dark, setDark] = useState(true),
@@ -490,6 +554,7 @@ function App() {
           </section>
         </Reveal>
       </main>
+      <PoweredBy />
       <footer>
         <div className="container footer">
           <span>© {new Date().getFullYear()} TechCodeCo</span>
