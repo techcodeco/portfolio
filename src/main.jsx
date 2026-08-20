@@ -229,17 +229,134 @@ const LAYER_CARDS = [
   },
 ];
 
+function LazySection({
+  children,
+  id,
+  minHeight = 320,
+  rootMargin = "420px 0px",
+}) {
+  const hostRef = useRef(null);
+  const [active, setActive] = useState(false);
+  const [height, setHeight] = useState(minHeight);
+
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
+
+    let resizeObserver;
+    const observer = new IntersectionObserver(
+      ([entry]) => setActive(entry.isIntersecting),
+      { rootMargin, threshold: 0.01 },
+    );
+    observer.observe(host);
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(([entry]) => {
+        const next = Math.ceil(entry.contentRect.height);
+        if (next > 24) setHeight(next);
+      });
+      resizeObserver.observe(host);
+    }
+
+    return () => {
+      observer.disconnect();
+      resizeObserver?.disconnect();
+    };
+  }, [rootMargin]);
+
+  return (
+    <div
+      ref={hostRef}
+      id={id}
+      className="lazy-section"
+      style={{ minHeight: active ? undefined : height }}
+    >
+      {active ? children : null}
+    </div>
+  );
+}
 
 function PoweredBy() {
   const nodes = [
-    { name: "React", color: "#61DAFB", x: 54, y: 58, pin: [360, 118], path: "M 54 58 H 125 V 82 H 220 V 101 H 300 V 118 H 360" },
-    { name: "JavaScript", color: "#F7DF1E", x: 54, y: 145, pin: [360, 145], path: "M 54 145 H 145 V 132 H 235 V 145 H 360" },
-    { name: "TypeScript", color: "#3178C6", x: 54, y: 232, pin: [360, 172], path: "M 54 232 H 125 V 214 H 205 V 190 H 280 V 172 H 360" },
-    { name: "Node.js", color: "#83CD29", x: 54, y: 305, pin: [360, 198], path: "M 54 305 H 105 V 278 H 175 V 250 H 255 V 220 H 360 V 198" },
-    { name: "Redis", color: "#FF4D5E", x: 837, y: 58, pin: [531, 118], path: "M 837 58 H 766 V 82 H 680 V 101 H 600 V 118 H 531" },
-    { name: "PostgreSQL", color: "#4FA8FF", x: 837, y: 145, pin: [531, 145], path: "M 837 145 H 745 V 132 H 655 V 145 H 531" },
-    { name: "Docker", color: "#2496ED", x: 837, y: 232, pin: [531, 172], path: "M 837 232 H 766 V 214 H 685 V 190 H 605 V 172 H 531" },
-    { name: "CSS", color: "#06B6D4", x: 837, y: 305, pin: [531, 198], path: "M 837 305 H 785 V 278 H 715 V 250 H 635 V 220 H 531 V 198" },
+    {
+      name: "React",
+      Icon: SiReact,
+      color: "#61DAFB",
+      side: "left",
+      cx: 92,
+      cy: 112,
+      pinY: 236,
+      path: "M 130 112 H 205 V 145 H 285 V 185 H 345 V 236 H 385",
+    },
+    {
+      name: "JavaScript",
+      Icon: SiJavascript,
+      color: "#F7DF1E",
+      side: "left",
+      cx: 92,
+      cy: 250,
+      pinY: 296,
+      path: "M 130 250 H 220 V 272 H 315 V 296 H 385",
+    },
+    {
+      name: "TypeScript",
+      Icon: SiTypescript,
+      color: "#3178C6",
+      side: "left",
+      cx: 92,
+      cy: 388,
+      pinY: 356,
+      path: "M 130 388 H 205 V 365 H 285 V 356 H 385",
+    },
+    {
+      name: "Node.js",
+      Icon: SiNodedotjs,
+      color: "#83CD29",
+      side: "left",
+      cx: 92,
+      cy: 526,
+      pinY: 416,
+      path: "M 130 526 H 205 V 492 H 280 V 455 H 345 V 416 H 385",
+    },
+    {
+      name: "Redis",
+      Icon: SiRedis,
+      color: "#FF4D5E",
+      side: "right",
+      cx: 808,
+      cy: 112,
+      pinY: 236,
+      path: "M 770 112 H 695 V 145 H 615 V 185 H 555 V 236 H 515",
+    },
+    {
+      name: "PostgreSQL",
+      Icon: SiPostgresql,
+      color: "#4FA8FF",
+      side: "right",
+      cx: 808,
+      cy: 250,
+      pinY: 296,
+      path: "M 770 250 H 680 V 272 H 585 V 296 H 515",
+    },
+    {
+      name: "Docker",
+      Icon: SiDocker,
+      color: "#2496ED",
+      side: "right",
+      cx: 808,
+      cy: 388,
+      pinY: 356,
+      path: "M 770 388 H 695 V 365 H 615 V 356 H 515",
+    },
+    {
+      name: "MongoDB",
+      Icon: SiMongodb,
+      color: "#47A248",
+      side: "right",
+      cx: 808,
+      cy: 526,
+      pinY: 416,
+      path: "M 770 526 H 700 V 492 H 625 V 455 H 555 V 416 H 515",
+    },
   ];
 
   return (
@@ -247,46 +364,179 @@ function PoweredBy() {
       <div className="container">
         <Reveal>
           <div className="powered-heading">
-            <div><div className="kicker"><span>//</span> POWERED BY</div><h2 id="powered-title">Built from the inside out.</h2></div>
-            <p>A small look at the technologies wired into the systems I build.</p>
+            <div>
+              <div className="kicker">
+                <span>//</span> POWERED BY
+              </div>
+              <h2 id="powered-title">Built from the inside out.</h2>
+            </div>
+            <p>
+              A small look at the technologies wired into the systems I build.
+            </p>
           </div>
         </Reveal>
 
         <div className="powered-board glass">
           <div className="powered-grid" aria-hidden="true" />
-          <svg className="powered-svg" viewBox="0 0 891 330" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Technologies connected to a central technology core">
+          <svg
+            className="powered-svg"
+            viewBox="0 0 900 560"
+            preserveAspectRatio="xMidYMid meet"
+            role="img"
+            aria-label="Technology icons connected to a central integrated circuit"
+          >
             <defs>
-              <filter id="powered-glow"><feGaussianBlur stdDeviation="2.8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <filter
+                id="powered-glow"
+                x="-100%"
+                y="-100%"
+                width="300%"
+                height="300%"
+              >
+                <feGaussianBlur stdDeviation="2.5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <radialGradient id="chip-glow" cx="50%" cy="50%" r="70%">
+                <stop offset="0%" stopColor="var(--accent)" stopOpacity=".08" />
+                <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+              </radialGradient>
             </defs>
 
-            {nodes.map((node, index) => (
-              <g key={node.name} style={{ "--route-color": node.color, "--route-delay": `${index * 0.7}s` }}>
-                <path d={node.path} className="powered-route-base" />
-                <path d={node.path} className="powered-route-pulse" pathLength="1" />
-                <circle cx={node.x} cy={node.y} r="4" className="powered-tech-dot" style={{ fill: node.color }} />
-                <circle cx={node.x} cy={node.y} r="8" className="powered-tech-ring" style={{ stroke: node.color }} />
-                <text x={node.x + (node.x < 400 ? 16 : -16)} y={node.y + 4} textAnchor={node.x < 400 ? "start" : "end"} className="powered-tech-label">{node.name}</text>
-              </g>
-            ))}
+            <g transform="translate(0 -15) scale(1 0.88)">
+              {nodes.map((node, index) => {
+                const Icon = node.Icon;
+                return (
+                  <g
+                    key={node.name}
+                    className="powered-route-group"
+                    style={{
+                      "--route-color": node.color,
+                      "--route-delay": `${index * 0.62}s`,
+                    }}
+                  >
+                    <path d={node.path} className="powered-route-base" />
+                    <path
+                      d={node.path}
+                      className="powered-route-pulse"
+                      pathLength="1"
+                    />
 
-            <g className="powered-chip-svg">
-              <rect x="360" y="96" width="171" height="88" rx="14" />
-              <rect x="376" y="111" width="139" height="58" rx="9" />
-              <g className="chip-pins">
-                <path d="M 344 118 H 360"/><path d="M 344 145 H 360"/><path d="M 344 172 H 360"/><path d="M 344 198 H 360"/>
-                <path d="M 531 118 H 547"/><path d="M 531 145 H 547"/><path d="M 531 172 H 547"/><path d="M 531 198 H 547"/>
+                    <circle
+                      cx={node.cx}
+                      cy={node.cy}
+                      r="38"
+                      className="powered-icon-halo"
+                      style={{ stroke: node.color }}
+                    />
+                    <circle
+                      cx={node.cx}
+                      cy={node.cy}
+                      r="32"
+                      className="powered-icon-ring"
+                      style={{ stroke: node.color }}
+                    />
+                    <foreignObject
+                      x={node.cx - 30}
+                      y={node.cy - 30}
+                      width="60"
+                      height="60"
+                    >
+                      <div
+                        className="powered-icon-box"
+                        style={{ color: node.color }}
+                      >
+                        <Icon aria-hidden="true" />
+                      </div>
+                    </foreignObject>
+                    <circle
+                      cx={node.side === "left" ? 130 : 770}
+                      cy={node.cy}
+                      r="4"
+                      className="powered-connect-point"
+                      style={{ fill: node.color, stroke: node.color }}
+                    />
+                  </g>
+                );
+              })}
+
+              <g className="powered-chip-svg">
+                <rect
+                  x="390"
+                  y="200"
+                  width="120"
+                  height="250"
+                  rx="18"
+                  className="chip-shell"
+                />
+                <rect
+                  x="402"
+                  y="212"
+                  width="96"
+                  height="226"
+                  rx="13"
+                  className="chip-inner"
+                />
+                <rect
+                  x="402"
+                  y="212"
+                  width="96"
+                  height="226"
+                  rx="13"
+                  fill="url(#chip-glow)"
+                />
+
+                <g className="chip-pins">
+                  {[236, 296, 356, 416].map((y) => (
+                    <g key={`pins-${y}`}>
+                      <path d={`M 400 ${y} H 385`} />
+                      <path d={`M 500 ${y} H 515`} />
+                      <circle cx="400" cy={y} r="2.2" />
+                      <circle cx="500" cy={y} r="2.2" />
+                    </g>
+                  ))}
+                </g>
+
+                <circle cx="418" cy="230" r="4" className="chip-screw" />
+                <circle cx="482" cy="230" r="4" className="chip-screw" />
+                <circle cx="418" cy="420" r="4" className="chip-screw" />
+                <circle cx="482" cy="420" r="4" className="chip-screw" />
+
+                <text
+                  x="450"
+                  y="292"
+                  textAnchor="middle"
+                  className="chip-kicker"
+                >
+                  TC / CORE
+                </text>
+                <text x="450" y="326" textAnchor="middle" className="chip-main">
+                  TECH
+                </text>
+                <text x="450" y="350" textAnchor="middle" className="chip-main">
+                  CODE
+                </text>
+                <text
+                  x="450"
+                  y="378"
+                  textAnchor="middle"
+                  className="chip-status"
+                >
+                  SYSTEM // ONLINE
+                </text>
+                <circle cx="450" cy="400" r="4" className="chip-led" />
               </g>
-              <g className="chip-pin-dots">
-                {[118,145,172,198].map(y => <circle key={`l${y}`} cx="360" cy={y} r="3" />)}
-                {[118,145,172,198].map(y => <circle key={`r${y}`} cx="531" cy={y} r="3" />)}
-              </g>
-              <text x="445.5" y="130" textAnchor="middle">TC / CORE</text>
-              <text x="445.5" y="150" textAnchor="middle" className="chip-main">TECHCODE</text>
-              <text x="445.5" y="163" textAnchor="middle" className="chip-status">SYSTEM // ONLINE</text>
-              <circle cx="500" cy="156" r="3" />
             </g>
           </svg>
-          <div className="powered-status"><span><i/> SIGNAL FLOW ACTIVE</span><span>8 TECHNOLOGIES // 1 SYSTEM</span></div>
+
+          <div className="powered-status">
+            <span>
+              <i /> SIGNAL FLOW ACTIVE
+            </span>
+            <span>8 TECHNOLOGIES // 1 SYSTEM</span>
+          </div>
         </div>
       </div>
     </section>
@@ -304,7 +554,7 @@ function App() {
     rtl = lang === "fa",
     reduce = useReducedMotion();
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || window.matchMedia("(pointer: coarse)").matches) return;
     const lenis = new Lenis({
       duration: 1.15,
       easing: (t) => 1 - Math.pow(1 - t, 4),
@@ -450,111 +700,131 @@ function App() {
           </div>
         </section>
 
-        <Marquee items={TECH.slice(0, 10)} reverse />
+        <LazySection minHeight={62}>
+          <Marquee items={TECH.slice(0, 10)} reverse />
+        </LazySection>
 
-        <ModernTechStack lang={lang} />
+        <LazySection minHeight={760}>
+          <ModernTechStack lang={lang} />
+        </LazySection>
 
-        <Reveal>
-          <section id="about" className="section">
-            <div className="container about">
-              <div>
-                <Kicker>{t.aboutK}</Kicker>
-                <h2>{t.aboutT}</h2>
-              </div>
-              <div>
-                <p className="lead">{t.aboutP}</p>
-                <div className="stats">
-                  <Stat v="5+" l={t.years} />
-                  <Stat v="15" l={t.start} />
-                  <Stat v="∞" l={t.curiosity} />
-                </div>
-              </div>
-            </div>
-          </section>
-        </Reveal>
-
-        <Reveal>
-          <section id="stack" className="section">
-            <div className="container">
-              <Kicker>{t.stackK}</Kicker>
-              <h2>{t.stackT}</h2>
-              <div className="techgrid">
-                {TECH.map((x, i) => (
-                  <TechCard key={x.name} x={x} i={i} />
-                ))}
-              </div>
-            </div>
-          </section>
-        </Reveal>
-
-        <Marquee items={TECH.slice(6, 16)} />
-
-        <Reveal>
-          <section id="architecture" className="section">
-            <div className="container">
-              <div className="heading">
+        <LazySection id="about" minHeight={420}>
+          <Reveal>
+            <section className="section">
+              <div className="container about">
                 <div>
-                  <Kicker>{t.archK}</Kicker>
-                  <h2>{t.archT}</h2>
+                  <Kicker>{t.aboutK}</Kicker>
+                  <h2>{t.aboutT}</h2>
                 </div>
-                <p>{t.archP}</p>
+                <div>
+                  <p className="lead">{t.aboutP}</p>
+                  <div className="stats">
+                    <Stat v="5+" l={t.years} />
+                    <Stat v="15" l={t.start} />
+                    <Stat v="∞" l={t.curiosity} />
+                  </div>
+                </div>
               </div>
-              <SystemDiagram />
-            </div>
-          </section>
-        </Reveal>
+            </section>
+          </Reveal>
+        </LazySection>
 
-        <Reveal>
-          <section id="projects" className="section">
-            <div className="container">
-              <Kicker>{t.projK}</Kicker>
-              <h2>{t.projT}</h2>
-              <div className="projects">
-                {PROJECTS.map((p, i) => (
-                  <Project key={p.title} p={p} i={i} label={t.view} />
-                ))}
+        <LazySection id="stack" minHeight={720}>
+          <Reveal>
+            <section className="section">
+              <div className="container">
+                <Kicker>{t.stackK}</Kicker>
+                <h2>{t.stackT}</h2>
+                <div className="techgrid">
+                  {TECH.map((x, i) => (
+                    <TechCard key={x.name} x={x} i={i} />
+                  ))}
+                </div>
               </div>
-            </div>
-          </section>
-        </Reveal>
-        <Reveal>
-          <Certificates />
-        </Reveal>
-        <Reveal>
-          <section id="contact" className="section contact">
-            <div className="container contactbox glass">
-              <div>
-                <Kicker>{t.contactK}</Kicker>
-                <h2>{t.contactT}</h2>
-                <p>{t.contactP}</p>
+            </section>
+          </Reveal>
+        </LazySection>
+
+        <LazySection minHeight={110}>
+          <Marquee items={TECH.slice(6, 16)} />
+        </LazySection>
+
+        <LazySection id="architecture" minHeight={650}>
+          <Reveal>
+            <section className="section">
+              <div className="container">
+                <div className="heading">
+                  <div>
+                    <Kicker>{t.archK}</Kicker>
+                    <h2>{t.archT}</h2>
+                  </div>
+                  <p>{t.archP}</p>
+                </div>
+                <SystemDiagram />
               </div>
-              <div className="socials">
-                <Social
-                  icon={<Github />}
-                  label="GitHub"
-                  href="https://github.com/techcodeco"
-                />
-                <Social
-                  icon={<Instagram />}
-                  label="Instagram"
-                  href="https://instagram.com/techcodeco"
-                />
-                <Social
-                  icon={<Send />}
-                  label="Telegram"
-                  href="https://t.me/techcodeco"
-                />
-                <Social
-                  icon={<Mail />}
-                  label="Email"
-                  href="mailto:hello@techcodeco.dev"
-                />
+            </section>
+          </Reveal>
+        </LazySection>
+
+        <LazySection id="projects" minHeight={720}>
+          <Reveal>
+            <section className="section">
+              <div className="container">
+                <Kicker>{t.projK}</Kicker>
+                <h2>{t.projT}</h2>
+                <div className="projects">
+                  {PROJECTS.map((p, i) => (
+                    <Project key={p.title} p={p} i={i} label={t.view} />
+                  ))}
+                </div>
               </div>
-            </div>
-          </section>
-        </Reveal>
+            </section>
+          </Reveal>
+        </LazySection>
+        <LazySection id="certificates" minHeight={700}>
+          <Reveal>
+            <Certificates />
+          </Reveal>
+        </LazySection>
+        <LazySection id="contact" minHeight={420}>
+          <Reveal>
+            <section className="section contact">
+              <div className="container contactbox glass">
+                <div>
+                  <Kicker>{t.contactK}</Kicker>
+                  <h2>{t.contactT}</h2>
+                  <p>{t.contactP}</p>
+                </div>
+                <div className="socials">
+                  <Social
+                    icon={<Github />}
+                    label="GitHub"
+                    href="https://github.com/techcodeco"
+                  />
+                  <Social
+                    icon={<Instagram />}
+                    label="Instagram"
+                    href="https://instagram.com/techcodeco"
+                  />
+                  <Social
+                    icon={<Send />}
+                    label="Telegram"
+                    href="https://t.me/techcodeco"
+                  />
+                  <Social
+                    icon={<Mail />}
+                    label="Email"
+                    href="mailto:hello@techcodeco.dev"
+                  />
+                </div>
+              </div>
+            </section>
+          </Reveal>
+        </LazySection>
       </main>
-      <PoweredBy />
+      <LazySection id="powered-by" minHeight={520} rootMargin="500px 0px">
+        <PoweredBy />
+      </LazySection>
       <footer>
         <div className="container footer">
           <span>© {new Date().getFullYear()} TechCodeCo</span>
@@ -611,57 +881,104 @@ function Cursor() {
     sx = useSpring(x, { stiffness: 500, damping: 40 }),
     sy = useSpring(y, { stiffness: 500, damping: 40 });
   useEffect(() => {
+    if (window.matchMedia("(pointer: coarse)").matches) return;
     const f = (e) => {
       x.set(e.clientX - 9);
       y.set(e.clientY - 9);
     };
-    window.addEventListener("pointermove", f);
+    window.addEventListener("pointermove", f, { passive: true });
     return () => window.removeEventListener("pointermove", f);
-  }, []);
+  }, [x, y]);
   return <motion.div className="cursor" style={{ x: sx, y: sy }} />;
 }
 function CodeCanvas() {
   const ref = useRef(null);
   useEffect(() => {
-    const c = ref.current,
-      ctx = c.getContext("2d");
-    let raf;
-    const chars = "01{}[]<>/const async await => redis node bun";
+    const canvas = ref.current;
+    const hero = document.getElementById("home");
+    if (
+      !canvas ||
+      !hero ||
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    )
+      return;
+
+    const ctx = canvas.getContext("2d", { alpha: true });
+    if (!ctx) return;
+
+    let raf = 0;
+    let running = false;
+    let last = 0;
     let drops = [];
-    function resize() {
-      c.width = innerWidth * devicePixelRatio;
-      c.height = innerHeight * devicePixelRatio;
-      ctx.scale(devicePixelRatio, devicePixelRatio);
+    const chars = "01{}[]<>/const async await => redis node bun";
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+
+    const resize = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
+      canvas.style.width = `${w}px`;
+      canvas.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       drops = Array.from(
-        { length: Math.floor(innerWidth / 32) },
-        () => Math.random() * innerHeight,
+        { length: Math.min(42, Math.floor(w / 42)) },
+        () => Math.random() * h,
       );
-    }
-    resize();
-    addEventListener("resize", resize);
-    function draw() {
-      ctx.clearRect(0, 0, innerWidth, innerHeight);
+    };
+
+    const draw = (time) => {
+      if (!running) return;
+      if (time - last < 48) {
+        raf = requestAnimationFrame(draw);
+        return;
+      }
+      last = time;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      ctx.clearRect(0, 0, w, h);
       ctx.font = "10px monospace";
       ctx.fillStyle =
         getComputedStyle(document.body).getPropertyValue("--matrix").trim() ||
         "rgba(40,215,255,.13)";
       drops.forEach((y, i) => {
-        ctx.fillText(
-          chars[Math.floor(Math.random() * chars.length)],
-          i * 32,
-          y,
-        );
-        drops[i] = y > innerHeight + 100 ? Math.random() * -300 : y + 0.35;
+        ctx.fillText(chars[(Math.random() * chars.length) | 0], i * 42, y);
+        drops[i] = y > h + 100 ? Math.random() * -300 : y + 0.55;
       });
       raf = requestAnimationFrame(draw);
-    }
-    draw();
+    };
+
+    const setRunning = (next) => {
+      if (running === next) return;
+      running = next;
+      if (running) {
+        last = 0;
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(draw);
+      } else {
+        cancelAnimationFrame(raf);
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      }
+    };
+
+    resize();
+    const onResize = () => resize();
+    window.addEventListener("resize", onResize, { passive: true });
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setRunning(entry.isIntersecting),
+      { threshold: 0.01 },
+    );
+    observer.observe(hero);
+
     return () => {
-      cancelAnimationFrame(raf);
-      removeEventListener("resize", resize);
+      setRunning(false);
+      observer.disconnect();
+      window.removeEventListener("resize", onResize);
     };
   }, []);
-  return <canvas ref={ref} className="matrix" />;
+  return <canvas ref={ref} className="matrix" aria-hidden="true" />;
 }
 function SplitTitle({ text }) {
   return (
