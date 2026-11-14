@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from "react";
-import "./ParticleText.css";
+"use client";
 
+import { useEffect, useRef } from "react";
 const hexToRgb = (hex) => {
   const clean = String(hex).replace("#", "").trim();
   if (!/^[0-9a-fA-F]{6}$/.test(clean)) return null;
@@ -372,12 +372,19 @@ const ParticleText = ({
     canvas.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerleave", handlePointerLeave);
     canvas.addEventListener("click", handleClick);
-    const resizeObserver = new ResizeObserver(queueSample);
-    resizeObserver.observe(container);
+    let resizeObserver;
+    const handleWindowResize = () => queueSample();
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(queueSample);
+      resizeObserver.observe(container);
+    } else {
+      window.addEventListener("resize", handleWindowResize, { passive: true });
+    }
     sampleText();
     return () => {
       buildId += 1;
-      resizeObserver.disconnect();
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", handleWindowResize);
       reduceMotionQuery?.removeEventListener(
         "change",
         handleReduceMotionChange,
