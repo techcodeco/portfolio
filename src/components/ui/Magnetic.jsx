@@ -1,10 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export default function Magnetic({ children, primary = false, href, onClick }) {
   return (
-    <motion.a
+    <m.a
       href={href}
       role={!href ? "button" : undefined}
       tabIndex={!href ? 0 : undefined}
@@ -26,6 +26,6 @@ export default function Magnetic({ children, primary = false, href, onClick }) {
       whileTap={{ scale: 0.98 }}
     >
       {children}
-    </motion.a>
+    </m.a>
   );
 }

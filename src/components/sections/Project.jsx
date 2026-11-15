@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import {
   Activity,
   Braces,
@@ -23,7 +23,7 @@ export default function Project({ p, i, label }) {
   const repoName = p.repoName || p.github?.split("/").filter(Boolean).pop() || "repository";
 
   return (
-    <motion.article
+    <m.article
       className={"project glass " + (p.featured ? "featured" : "")}
       initial={reduce ? false : { opacity: 0, y: 35 }}
       whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
@@ -41,7 +41,7 @@ export default function Project({ p, i, label }) {
               <i />
             </span>
             <span className="repo-preview-address">
-              <Github size={13} />
+              <Github size={13} aria-hidden="true" focusable="false" />
               <span>github.com/techcodeco/</span>
             </span>
             <span className="repo-preview-public">PUBLIC</span>
@@ -49,7 +49,7 @@ export default function Project({ p, i, label }) {
 
           <div className="repo-preview-main">
             <div className="repo-preview-mark">
-              <PreviewIcon size={25} strokeWidth={1.8} />
+              <PreviewIcon size={25} strokeWidth={1.8} aria-hidden="true" focusable="false" />
             </div>
             <div className="repo-preview-copy">
               <span className="repo-preview-owner">techcodeco /</span>
@@ -78,12 +78,12 @@ export default function Project({ p, i, label }) {
           ))}
         </div>
         {p.github ? (
-          <a href={p.github} target="_blank" rel="noopener noreferrer">
+          <a href={p.github} target="_blank" rel="noopener noreferrer" aria-label={`View ${p.title} repository on GitHub`}>
             {label}
-            <ExternalLink size={14} />
+            <ExternalLink size={14} aria-hidden="true" focusable="false" />
           </a>
         ) : null}
       </div>
-    </motion.article>
+    </m.article>
   );
 }

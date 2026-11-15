@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import Image from "next/image";
+import { m } from "framer-motion";
 import { ArrowUpRight, Github, MousePointer2 } from "lucide-react";
 import CodeEditor from "@/components/sections/CodeEditor";
 import ParticleText from "@/components/ParticleText/ParticleText";
@@ -10,26 +11,26 @@ import Stat from "@/components/ui/Stat";
 export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
   return (
     <section id="home" className="hero">
-      <motion.div className="hero-aurora" style={{ y: heroY }} />
+      <m.div className="hero-aurora" style={{ y: heroY }} />
       <div className="container hero-grid">
         <div className="hero-copy" id="about">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
             className="eyebrow"
           >
             <i /> {t.ey}
-          </motion.div>
+          </m.div>
 
-          <motion.h1
+          <m.h1
             className="hero-name"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.65 }}
           >
             {t.title}
-          </motion.h1>
+          </m.h1>
 
           <ParticleText
             as="h2"
@@ -41,13 +42,13 @@ export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
                 ? "مهندسی با دقت،\nمنطق و هدف."
                 : "Engineering with clarity\nand purpose."
             }
-            mobileDensity={2}
-            mobileParticleSize={2}
+            mobileDensity={1}
+            mobileParticleSize={1.25}
             mobileFontSize="clamp(1.25rem, 6vw, 2rem)"
             color={dark ? "#F3EEFF" : "#172033"}
             highlightColor={dark ? "#B026FF" : "#7C3AED"}
-            particleSize={2.2}
-            density={3}
+            particleSize={1.65}
+            density={2}
             scatter={150}
             gatherDuration={1450}
             stagger={360}
@@ -61,25 +62,37 @@ export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
             glow
           />
 
-          <motion.p
-            className="hero-intro"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.72, duration: 0.6 }}
-          >
-            {t.desc}
-          </motion.p>
+          <div className="hero-intro-row">
+            <div className="hero-intro-photo-wrap">
+              <Image
+                src="/img/mohammad-afrouzeh.webp"
+                alt={
+                  rtl
+                    ? "پرتره محمد افروزه در فضای کاری TECHCODE"
+                    : "Portrait of Mohammad Afrouzeh in his TECHCODE workspace"
+                }
+                width={720}
+                height={720}
+                sizes="(max-width: 700px) 88px, 116px"
+                className="hero-intro-photo"
+                unoptimized
+                loading="eager"
+                fetchPriority="low"
+              />
+            </div>
+            <p className="hero-intro">{t.desc}</p>
+          </div>
 
-          <motion.div
+          <m.div
             className="stats hero-stats"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.84, duration: 0.55 }}
           >
             <Stat v="API" l={t.focus} />
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.96, duration: 0.55 }}
@@ -87,13 +100,13 @@ export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
           >
             <Magnetic onClick={() => onNavigate("projects")} primary>
               {t.cta}
-              <ArrowUpRight size={17} />
+              <ArrowUpRight size={17} aria-hidden="true" focusable="false" />
             </Magnetic>
             <Magnetic href="https://github.com/techcodeco">
-              <Github size={17} />
+              <Github size={17} aria-hidden="true" focusable="false" />
               {t.git}
             </Magnetic>
-          </motion.div>
+          </m.div>
 
           <div className="meta">
             <span>
@@ -105,7 +118,7 @@ export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
         <CodeEditor />
       </div>
       <div className="scroll-hint">
-        <MousePointer2 size={14} /> {t.scrollHint}
+        <MousePointer2 size={14} aria-hidden="true" focusable="false" /> {t.scrollHint}
       </div>
     </section>
   );

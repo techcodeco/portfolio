@@ -1,12 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export default function SplitTitle({ text }) {
   return (
     <h1>
       {text.split(" ").map((w, i) => (
-        <motion.span
+        <m.span
           key={i}
           initial={{ y: "110%", opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -17,7 +17,7 @@ export default function SplitTitle({ text }) {
           }}
         >
           {w}&nbsp;
-        </motion.span>
+        </m.span>
       ))}
     </h1>
   );

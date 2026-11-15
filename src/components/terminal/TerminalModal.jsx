@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { X } from "lucide-react";
 import { TERMINAL_TECH } from "@/data/terminal-data";
 
@@ -144,7 +144,7 @@ export default function TerminalModal({ close }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [close]);
   return (
-    <motion.div
+    <m.div
       className="modal terminal-modal"
       dir="ltr"
       role="presentation"
@@ -153,7 +153,7 @@ export default function TerminalModal({ close }) {
       exit={{ opacity: 0 }}
       onClick={close}
     >
-      <motion.div
+      <m.div
         className="body-terminal"
         dir="ltr"
         role="dialog"
@@ -233,7 +233,7 @@ export default function TerminalModal({ close }) {
           <span>system online</span>
           <span>TECHCODE neon theme</span>
         </div>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }

@@ -1,12 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export default function TechCard({ x, i }) {
   const Icon = x.icon;
 
   return (
-    <motion.article
+    <m.article
       className="tech glass"
       initial={{ opacity: 0, y: 25 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -23,6 +23,6 @@ export default function TechCard({ x, i }) {
         </div>
         <small>{x.category}</small>
       </div>
-    </motion.article>
+    </m.article>
   );
 }

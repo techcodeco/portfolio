@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useTransform, useScroll } from "framer-motion";
+import { m, useTransform, useScroll } from "framer-motion";
 
 export default function CodeMotion3D() {
   const { scrollYProgress } = useScroll();
@@ -20,15 +20,15 @@ export default function CodeMotion3D() {
   ];
   return (
     <div className="code3d">
-      <motion.div
+      <m.div
         className="code3d-orbit orbit-a"
         style={{ rotateZ: rotate }}
       />
-      <motion.div
+      <m.div
         className="code3d-orbit orbit-b"
         style={{ rotateZ: rotate }}
       />
-      <motion.div className="code3d-scene" style={{ rotateX: rotate, y }}>
+      <m.div className="code3d-scene" style={{ rotateX: rotate, y }}>
         <div className="code3d-grid" />
         <div className="code3d-core glass">
           <div className="code3d-windowbar">
@@ -61,7 +61,7 @@ export default function CodeMotion3D() {
           </div>
         </div>
         {symbols.map((symbol, i) => (
-          <motion.span
+          <m.span
             key={symbol + i}
             className={"code3d-symbol s" + i}
             animate={{
@@ -77,9 +77,9 @@ export default function CodeMotion3D() {
             }}
           >
             {symbol}
-          </motion.span>
+          </m.span>
         ))}
-      </motion.div>
+      </m.div>
       <div className="code3d-caption">
         <span>
           <i /> scroll depth

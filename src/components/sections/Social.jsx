@@ -1,13 +1,14 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { cloneElement } from "react";
+import { m } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 export default function Social({ icon, label, href }) {
   const external = /^https?:\/\//i.test(href);
 
   return (
-    <motion.a
+    <m.a
       className="social"
       href={href}
       target={external ? "_blank" : undefined}
@@ -15,9 +16,11 @@ export default function Social({ icon, label, href }) {
       aria-label={label}
       whileHover={{ y: -5 }}
     >
-      {icon}
+      {icon
+        ? cloneElement(icon, { "aria-hidden": true, focusable: false })
+        : null}
       <strong>{label}</strong>
-      <ArrowUpRight size={15} />
-    </motion.a>
+      <ArrowUpRight size={15} aria-hidden="true" focusable="false" />
+    </m.a>
   );
 }

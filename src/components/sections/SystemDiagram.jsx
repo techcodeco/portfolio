@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { Code2, Database, Server, GitBranch, Cpu, Layers3 } from "lucide-react";
 
 export default function SystemDiagram({ lang = "en" }) {
@@ -24,15 +24,15 @@ export default function SystemDiagram({ lang = "en" }) {
       <div className="systemflow">
         {nodes.map(([a, b, I], i) => (
           <React.Fragment key={a}>
-            <motion.div
+            <m.div
               className={`node node-${i}`}
               whileHover={{ scale: 1.045 }}
             >
               <span className="node-energy" aria-hidden="true" />
-              <I />
+              <I aria-hidden="true" focusable="false" />
               <strong>{a}</strong>
               <small>{b}</small>
-            </motion.div>
+            </m.div>
             {i < nodes.length - 1 && (
               <div className={`flow flow-${i}`} aria-hidden="true">
                 <i />
@@ -45,13 +45,13 @@ export default function SystemDiagram({ lang = "en" }) {
       </div>
       <div className="systemtags">
         <span>
-          <Cpu /> {fa ? "سرویس‌های ماژولار" : "modular services"}
+          <Cpu aria-hidden="true" focusable="false" /> {fa ? "سرویس‌های ماژولار" : "modular services"}
         </span>
         <span>
-          <GitBranch /> {fa ? "پردازش مبتنی بر صف" : "queue-backed jobs"}
+          <GitBranch aria-hidden="true" focusable="false" /> {fa ? "پردازش مبتنی بر صف" : "queue-backed jobs"}
         </span>
         <span>
-          <Server /> {fa ? "ذخیره‌سازی مشترک داده" : "shared data stores"}
+          <Server aria-hidden="true" focusable="false" /> {fa ? "ذخیره‌سازی مشترک داده" : "shared data stores"}
         </span>
       </div>
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
+import { m, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
 
 export default function Cursor() {
   const reduce = useReducedMotion();
@@ -19,5 +19,5 @@ export default function Cursor() {
     return () => window.removeEventListener("pointermove", f);
   }, [reduce, x, y]);
   if (reduce) return null;
-  return <motion.div className="cursor" style={{ x: sx, y: sy }} aria-hidden="true" />;
+  return <m.div className="cursor" style={{ x: sx, y: sy }} aria-hidden="true" />;
 }

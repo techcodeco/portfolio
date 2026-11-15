@@ -93,6 +93,9 @@ const ParticleText = ({
     let width = 0,
       height = 0,
       dpr = 1;
+    let isIntersecting = false;
+    let isMobileViewport = window.matchMedia?.("(max-width: 700px)").matches ?? false;
+    let lastRenderTime = 0;
     const pointer = { active: false, x: 0, y: 0, smoothX: 0, smoothY: 0 };
 
     const startGather = (fromScatter = true) => {
@@ -133,6 +136,12 @@ const ParticleText = ({
     };
 
     const render = (now) => {
+      const frameInterval = isMobileViewport ? 1000 / 30 : 1000 / 60;
+      if (!reducedMotion && now - lastRenderTime < frameInterval) {
+        animationFrame = window.requestAnimationFrame(render);
+        return;
+      }
+      lastRenderTime = now;
       ctx.clearRect(0, 0, width, height);
       if (glow && !reducedMotion) {
         ctx.shadowBlur = particleSize * 3;
@@ -192,12 +201,21 @@ const ParticleText = ({
       ctx.globalAlpha = 1;
       ctx.shadowBlur = 0;
       if (gathering && complete) gathering = false;
-      animationFrame = window.requestAnimationFrame(render);
+      animationFrame = reducedMotion
+        ? null
+        : window.requestAnimationFrame(render);
     };
 
     const ensureRenderLoop = () => {
+      if (!isIntersecting || document.visibilityState === "hidden") return;
       if (animationFrame === null)
         animationFrame = window.requestAnimationFrame(render);
+    };
+    const stopRenderLoop = () => {
+      if (animationFrame !== null) {
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = null;
+      }
     };
 
     const sampleText = async () => {
@@ -205,6 +223,7 @@ const ParticleText = ({
       const rect = container.getBoundingClientRect();
       const isMobile =
         window.matchMedia?.("(max-width: 700px)").matches ?? false;
+      isMobileViewport = isMobile;
       const activeText = isMobile && mobileText ? mobileText : text;
       const activeDensity = isMobile ? mobileDensity : density;
       const activeParticleSize = isMobile ? mobileParticleSize : particleSize;
@@ -213,7 +232,7 @@ const ParticleText = ({
       width = Math.floor(rect.width);
       height = Math.floor(rect.height);
       if (width <= 0 || height <= 0) return;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, 2.5);
       canvas.width = Math.max(1, Math.floor(width * dpr));
       canvas.height = Math.max(1, Math.floor(height * dpr));
       canvas.style.width = "100%";
@@ -318,7 +337,7 @@ const ParticleText = ({
           offscreen.height,
         ),
         targets = [];
-      const step = Math.max(2, Math.floor(activeDensity));
+      const step = Math.max(1, Math.floor(activeDensity));
       for (let y = 0; y < offscreen.height; y += step)
         for (let x = 0; x < offscreen.width; x += step) {
           const alpha = imageData.data[(y * offscreen.width + x) * 4 + 3];
@@ -329,9 +348,9 @@ const ParticleText = ({
               alpha: alpha / 255,
             });
         }
-      const maxParticles = isMobile
-        ? Math.max(2000, Math.min(7800, Math.floor((width * height) / 36)))
-        : Math.max(900, Math.min(5200, Math.floor((width * height) / 90)));
+      // A denser sampling cap keeps the particle typography crisp on high-DPI screens.
+      // Rendering is paused outside the hero viewport to avoid wasting main-thread time.
+      const maxParticles = isMobile ? 6500 : 12000;
       const stride = Math.max(1, Math.ceil(targets.length / maxParticles));
       const baseRgb = hexToRgb(color),
         highlightRgb = hexToRgb(highlightColor);
@@ -416,6 +435,25 @@ const ParticleText = ({
     const reduceMotionQuery = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
     );
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") stopRenderLoop();
+      else ensureRenderLoop();
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    let visibilityObserver;
+    if (typeof IntersectionObserver !== "undefined") {
+      visibilityObserver = new IntersectionObserver(
+        ([entry]) => {
+          isIntersecting = Boolean(entry?.isIntersecting);
+          if (isIntersecting) ensureRenderLoop();
+          else stopRenderLoop();
+        },
+        { threshold: 0, rootMargin: "120px 0px" },
+      );
+      visibilityObserver.observe(container);
+    } else {
+      isIntersecting = true;
+    }
     const handleReduceMotionChange = (event) => {
       reducedMotion = event.matches;
       sampleText();
@@ -437,6 +475,8 @@ const ParticleText = ({
     return () => {
       buildId += 1;
       resizeObserver?.disconnect();
+      visibilityObserver?.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("resize", handleWindowResize);
       reduceMotionQuery?.removeEventListener(
         "change",
@@ -446,7 +486,7 @@ const ParticleText = ({
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerleave", handlePointerLeave);
       canvas.removeEventListener("click", handleClick);
-      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
+      stopRenderLoop();
       if (resizeFrame !== null) window.cancelAnimationFrame(resizeFrame);
     };
   }, [

@@ -1,10 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 
 export default function Loader() {
   return (
-    <motion.div
+    <m.div
       className="loader"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -18,6 +18,6 @@ export default function Loader() {
           <i />
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 }

@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, useSpring, useTransform, useScroll, useReducedMotion } from "framer-motion";
+import dynamic from "next/dynamic";
+import {
+  AnimatePresence,
+  LazyMotion,
+  domAnimation,
+  useSpring,
+  useTransform,
+  useScroll,
+  useReducedMotion,
+} from "framer-motion";
 import Lenis from "lenis";
 import Loader from "@/components/effects/Loader";
 import Cursor from "@/components/effects/Cursor";
@@ -19,8 +28,12 @@ import ModernTechStack from "@/components/sections/ModernTechStack";
 import LazySection from "@/components/layout/LazySection";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import TerminalLauncher from "@/components/terminal/TerminalLauncher";
-import TerminalModal from "@/components/terminal/TerminalModal";
 import { TECH, PROJECTS, PROJECTS_FA, COPY } from "@/data/portfolio-data";
+
+const TerminalModal = dynamic(
+  () => import("@/components/terminal/TerminalModal"),
+  { ssr: false, loading: () => null },
+);
 
 export default function PortfolioApp({ initialLang = "en" }) {
   const [lang] = useState(initialLang);
@@ -75,46 +88,46 @@ export default function PortfolioApp({ initialLang = "en" }) {
   };
 
   return (
-    <div className="app">
-      <a className="skip-link" href="#main-content">
-        {rtl ? "پرش به محتوای اصلی" : "Skip to main content"}
-      </a>
-      <AnimatePresence>{!loaded && <Loader />}</AnimatePresence>
-      <ScrollProgress progress={progress} />
-      <Cursor />
-      <CodeCanvas />
-      <SiteHeader
-        menu={menu}
-        setMenu={setMenu}
-        lang={lang}
-        dark={dark}
-        setDark={setDark}
-        t={t}
-        onNavigate={navigateTo}
-      />
+    <LazyMotion features={domAnimation} strict>
+      <div className="app">
+        <a className="skip-link" href="#main-content">
+          {rtl ? "پرش به محتوای اصلی" : "Skip to main content"}
+        </a>
+        <AnimatePresence>{!loaded && <Loader />}</AnimatePresence>
+        <ScrollProgress progress={progress} />
+        <Cursor />
+        <CodeCanvas />
+        <SiteHeader
+          menu={menu}
+          setMenu={setMenu}
+          lang={lang}
+          dark={dark}
+          setDark={setDark}
+          t={t}
+          onNavigate={navigateTo}
+        />
 
-      <main id="main-content">
-        <HeroSection t={t} rtl={rtl} dark={dark} heroY={heroY} onNavigate={navigateTo} />
-        <TechMarquee items={TECH.slice(0, 10)} reverse minHeight={62} />
-        <LazySection minHeight={900}>
-          <ModernTechStack lang={lang} />
-        </LazySection>
-        <SkillsSection t={t} tech={TECH} />
-        <TechMarquee items={TECH.slice(6, 14)} minHeight={110} />
-        <ArchitectureSection t={t} lang={lang} />
-        <ProjectsSection t={t} projects={rtl ? PROJECTS_FA : PROJECTS} />
-        <LazySection id="powered-by" minHeight={620}>
-          <PoweredBy lang={lang} />
-        </LazySection>
-        <ContactSection t={t} />
-      </main>
-
-      <SiteFooter text={t.footer} onNavigate={navigateTo} />
-
-      <AnimatePresence>
-        {easter && <TerminalModal close={() => setEaster(false)} />}
-      </AnimatePresence>
-      <TerminalLauncher onOpen={() => setEaster(true)} />
-    </div>
+        <main id="main-content">
+          <HeroSection t={t} rtl={rtl} dark={dark} heroY={heroY} onNavigate={navigateTo} />
+          <TechMarquee items={TECH.slice(0, 10)} reverse minHeight={62} />
+          <LazySection minHeight={900}>
+            <ModernTechStack lang={lang} />
+          </LazySection>
+          <SkillsSection t={t} tech={TECH} />
+          <TechMarquee items={TECH.slice(6, 14)} minHeight={110} />
+          <ArchitectureSection t={t} lang={lang} />
+          <ProjectsSection t={t} projects={rtl ? PROJECTS_FA : PROJECTS} />
+          <LazySection id="powered-by" minHeight={620}>
+            <PoweredBy lang={lang} />
+          </LazySection>
+          <ContactSection t={t} />
+        </main>
+        <SiteFooter text={t.footer} onNavigate={navigateTo} />
+        <AnimatePresence>
+          {easter && <TerminalModal close={() => setEaster(false)} />}
+        </AnimatePresence>
+        <TerminalLauncher onOpen={() => setEaster(true)} />
+      </div>
+    </LazyMotion>
   );
 }

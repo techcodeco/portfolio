@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { Terminal } from "lucide-react";
 import { CODE_SAMPLES } from "@/data/code-samples";
 
@@ -24,7 +24,15 @@ export default function CodeEditor() {
 
     setTyped(0);
     const interval = window.setInterval(() => {
-      setTyped((prev) => (prev < fullText.length ? prev + 1 : prev));
+      setTyped((prev) => {
+        if (prev >= fullText.length) {
+          window.clearInterval(interval);
+          return prev;
+        }
+        const next = prev + 1;
+        if (next >= fullText.length) window.clearInterval(interval);
+        return next;
+      });
     }, 15);
     return () => window.clearInterval(interval);
   }, [mode, fullText, reduceMotion]);
@@ -66,7 +74,7 @@ export default function CodeEditor() {
   };
 
   return (
-    <motion.div
+    <m.div
       initial={reduceMotion ? false : { opacity: 0, x: 40, rotate: 2 }}
       animate={{ opacity: 1, x: 0, rotate: 0 }}
       transition={{ delay: 0.65, duration: 0.9 }}
@@ -113,6 +121,6 @@ export default function CodeEditor() {
       </div>
 
       <div className="editor-glow" />
-    </motion.div>
+    </m.div>
   );
 }

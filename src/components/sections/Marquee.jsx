@@ -1,17 +1,20 @@
 export default function Marquee({ items, reverse }) {
-  const loop = [...items, ...items];
   return (
-    <div className="marquee">
-      <div className={"marqueetrack " + (reverse ? "rev" : "")}>
-        {loop.map((x, i) => {
-          const I = x.icon;
-          return (
-            <span key={i}>
-              <I />
-              {x.name}
-            </span>
-          );
-        })}
+    <div className="marquee" aria-hidden="true">
+      <div className={`marqueetrack${reverse ? " rev" : ""}`}>
+        {[0, 1].map((group) => (
+          <div className="marquee-group" key={group}>
+            {items.map((item) => {
+              const Icon = item.icon;
+              return (
+                <span key={`${group}-${item.name}`}>
+                  <Icon aria-hidden="true" focusable="false" />
+                  {item.name}
+                </span>
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );

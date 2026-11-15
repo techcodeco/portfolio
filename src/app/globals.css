@@ -265,6 +265,42 @@ button {
   color: var(--muted);
   margin: 0;
 }
+.hero-intro-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  max-width: 700px;
+  min-width: 0;
+}
+.hero-intro-row > .hero-intro {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 700px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.9;
+}
+.hero-intro-photo-wrap {
+  position: relative;
+  flex: 0 0 116px;
+  width: 116px;
+  height: 128px;
+  padding: 3px;
+  border: 1px solid rgba(176, 38, 255, 0.42);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(176, 38, 255, 0.2), rgba(0, 140, 255, 0.08));
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.24), 0 0 28px rgba(133, 0, 255, 0.12);
+  overflow: hidden;
+}
+.hero-intro-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+  object-position: center 38%;
+}
 .actions {
   display: flex;
   gap: 11px;
@@ -409,30 +445,42 @@ button {
 .marqueetrack {
   display: flex;
   width: max-content;
-  animation: move 28s linear infinite;
-  padding: 17px 0;
+  animation: move 30s linear infinite;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  direction: ltr;
 }
 .marqueetrack.rev {
   animation-direction: reverse;
 }
-.marquee:hover .marqueetrack {
-  animation-play-state: paused;
+.marquee-group {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 36px;
+  padding: 17px 18px;
+  direction: ltr;
 }
 .marqueetrack span {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 9px;
-  margin: 0 18px;
   color: var(--muted);
   font-size: 13px;
+  white-space: nowrap;
 }
 .marqueetrack svg {
   color: var(--accent);
   font-size: 18px;
+  flex: 0 0 auto;
 }
 @keyframes move {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 .section {
@@ -1063,6 +1111,11 @@ footer {
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .marqueetrack {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    will-change: auto;
+  }
   *,
   *:before,
   *:after {
@@ -3984,7 +4037,8 @@ body[data-theme="light"] .repo-preview-public { color: #66748B; border-color: rg
   font-weight: 720;
   color: var(--accent);
 }
-.hero-copy > .hero-intro {
+.hero-copy > .hero-intro,
+.hero-intro-row > .hero-intro {
   max-width: 700px;
   margin: 0;
   color: var(--muted);
@@ -4028,9 +4082,22 @@ body[data-theme="light"] .repo-preview-public { color: #66748B; border-color: rg
     font-size: clamp(23px, 7vw, 30px);
     line-height: 1.3;
   }
-  .hero-copy > .hero-intro {
+  .hero-copy > .hero-intro,
+  .hero-intro-row > .hero-intro {
     font-size: 15px;
     line-height: 1.85;
+  }
+  .hero-intro-row {
+    gap: 13px;
+  }
+  .hero-intro-photo-wrap {
+    flex-basis: 88px;
+    width: 88px;
+    height: 96px;
+    border-radius: 16px;
+  }
+  .hero-intro-photo {
+    border-radius: 12px;
   }
   .hero-stats {
     margin-top: 18px;
