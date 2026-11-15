@@ -73,7 +73,7 @@ export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
                 }
                 width={720}
                 height={720}
-                sizes="(max-width: 700px) 88px, 116px"
+                sizes="(max-width: 700px) 82vw, (max-width: 1100px) 190px, 210px"
                 className="hero-intro-photo"
                 unoptimized
                 loading="eager"
