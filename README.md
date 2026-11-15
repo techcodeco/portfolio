@@ -40,7 +40,8 @@ npm start
 - `src/components/terminal`: interactive TECHCODE profile terminal
 - `src/components/seo`: structured data
 - `src/data`: portfolio copy, project records, technologies and editor samples
-- `public`: favicon and social sharing image
+- `public/icons`: website favicon, browser icons, and app icons
+- `public/img`: social sharing artwork and website images (currently includes `opengraph-image.png`)
 
 ## Languages and SEO
 

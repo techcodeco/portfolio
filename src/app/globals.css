@@ -1579,7 +1579,7 @@ body[data-theme="light"] .layer-card{background:linear-gradient(145deg,rgba(255,
    Replaces the old layer-card presentation with a magnetic deck.
    ========================================================= */
 .modern-stack-section{position:relative;min-height:100vh;width:100%;overflow:hidden;isolation:isolate;background:radial-gradient(circle at 78% 50%,rgba(139,99,255,.12),transparent 34%),radial-gradient(circle at 16% 24%,rgba(133,0,255,.035),transparent 26%);color:var(--text);padding:130px 0}
-.modern-stack-grid-bg{position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(243,238,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(243,238,255,.025) 1px,transparent 1px);background-size:56px 56px;mask-image:linear-gradient(to bottom,transparent,black 14%,black 86%,transparent)}
+/* Modern Technology intentionally reuses the single fixed body::before grid. */
 .modern-stack-container{width:min(1400px,calc(100% - 120px));min-height:760px;margin:auto;display:grid;grid-template-columns:minmax(370px,.85fr) minmax(600px,1.15fr);align-items:center;gap:65px}
 .modern-stack-copy{position:relative;z-index:10;max-width:570px}
 .modern-stack-eyebrow{display:flex;align-items:center;gap:9px;margin-bottom:23px;color:var(--muted);font:700 10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.22em;text-transform:uppercase}
@@ -1625,7 +1625,6 @@ body[data-theme="light"] .layer-card{background:linear-gradient(145deg,rgba(255,
 .tech-deck-hint{position:absolute;right:12px;bottom:9px;color:var(--muted);font:700 7px ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase}
 .tech-deck.is-interacting .tech-deck-card{transition-duration:360ms}
 body[data-theme="light"] .modern-stack-section{background:radial-gradient(circle at 78% 50%,rgba(133,0,255,.09),transparent 34%),#F0F6FF}
-body[data-theme="light"] .modern-stack-grid-bg{background-image:linear-gradient(rgba(29,75,145,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(29,75,145,.045) 1px,transparent 1px)}
 body[data-theme="light"] .modern-stack-title span{color:#7028D8;text-shadow:none}
 body[data-theme="light"] .tech-deck-card{background:linear-gradient(145deg,#fff,#EAF2FF);border-color:rgba(29,75,145,.12);box-shadow:0 30px 80px rgba(29,75,145,.12),inset 0 1px rgba(255,255,255,.95)}
 body[data-theme="light"] .tech-deck-card::after{background-image:linear-gradient(rgba(29,75,145,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(29,75,145,.035) 1px,transparent 1px)}

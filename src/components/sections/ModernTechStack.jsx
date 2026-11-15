@@ -45,7 +45,6 @@ export default function ModernTechStack({ lang = "en" }) {
 
   return (
     <section id="modern-stack" className="modern-stack-section" aria-labelledby="modern-stack-title">
-      <div className="modern-stack-grid-bg" aria-hidden="true" />
       <div className="container modern-stack-container">
         <div className="modern-stack-copy">
           <div className="modern-stack-eyebrow">

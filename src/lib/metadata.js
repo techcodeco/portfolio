@@ -57,7 +57,7 @@ export function createEnglishMetadata() {
       alternateLocale: ["fa_IR"],
       images: [
         {
-          url: "/opengraph-image.png",
+          url: "/img/opengraph-image.png",
           width: 1200,
           height: 630,
           alt: "Mohammad Afrouzeh — Full-Stack Developer, TECHCODE",
@@ -68,11 +68,17 @@ export function createEnglishMetadata() {
       card: "summary_large_image",
       title,
       description,
-      images: ["/opengraph-image.png"],
+      images: ["/img/opengraph-image.png"],
     },
     icons: {
-      icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-      shortcut: ["/icon.svg"],
+      icon: [
+        { url: "/icons/favicon-48x48.png", type: "image/png", sizes: "48x48" },
+        { url: "/icons/favicon-96x96.png", type: "image/png", sizes: "96x96" },
+        { url: "/icons/favicon.ico", sizes: "any" },
+        { url: "/icons/icon.svg", type: "image/svg+xml" },
+      ],
+      shortcut: ["/icons/favicon.ico"],
+      apple: [{ url: "/icons/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
     },
     category: "technology",
   };
@@ -122,7 +128,7 @@ export function createPersianMetadata() {
       alternateLocale: ["en_US"],
       images: [
         {
-          url: "/opengraph-image.png",
+          url: "/img/opengraph-image.png",
           width: 1200,
           height: 630,
           alt: "محمد افروزه — توسعه‌دهنده فول‌استک و TECHCODE",
@@ -133,11 +139,17 @@ export function createPersianMetadata() {
       card: "summary_large_image",
       title,
       description,
-      images: ["/opengraph-image.png"],
+      images: ["/img/opengraph-image.png"],
     },
     icons: {
-      icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-      shortcut: ["/icon.svg"],
+      icon: [
+        { url: "/icons/favicon-48x48.png", type: "image/png", sizes: "48x48" },
+        { url: "/icons/favicon-96x96.png", type: "image/png", sizes: "96x96" },
+        { url: "/icons/favicon.ico", sizes: "any" },
+        { url: "/icons/icon.svg", type: "image/svg+xml" },
+      ],
+      shortcut: ["/icons/favicon.ico"],
+      apple: [{ url: "/icons/apple-touch-icon.png", type: "image/png", sizes: "180x180" }],
     },
     category: "technology",
   };
