@@ -8,16 +8,16 @@ export default function SystemDiagram({ lang = "en" }) {
   const fa = lang === "fa";
   const nodes = fa
     ? [
-        ["کلاینت", "وب · موبایل", Code2],
-        ["درگاه", "احراز هویت · محدودیت نرخ", Server],
-        ["صف", "Redis · Workerها", Layers3],
-        ["داده", "PostgreSQL · Cache", Database],
+        ["کلاینت", "HTTP Request", Code2],
+        ["Gateway", "مسیریابی درخواست‌ها", Server],
+        ["صف و Worker", "Redis · BullMQ", Layers3],
+        ["داده", "MongoDB", Database],
       ]
     : [
-        ["Client", "Web · Mobile", Code2],
-        ["Gateway", "Auth · Rate limit", Server],
-        ["Queue", "Redis · Workers", Layers3],
-        ["Data", "Postgres · Cache", Database],
+        ["Client", "HTTP Request", Code2],
+        ["Gateway", "Request Routing", Server],
+        ["Queue & workers", "Redis · BullMQ", Layers3],
+        ["Data", "MongoDB", Database],
       ];
   return (
     <div className="system glass">
@@ -45,13 +45,13 @@ export default function SystemDiagram({ lang = "en" }) {
       </div>
       <div className="systemtags">
         <span>
-          <Cpu /> {fa ? "مقیاس‌پذیری افقی" : "horizontal scale"}
+          <Cpu /> {fa ? "سرویس‌های ماژولار" : "modular services"}
         </span>
         <span>
-          <GitBranch /> {fa ? "مبتنی بر رویداد" : "event-driven"}
+          <GitBranch /> {fa ? "پردازش مبتنی بر صف" : "queue-backed jobs"}
         </span>
         <span>
-          <Server /> {fa ? "مقاوم در برابر خطا" : "failure-aware"}
+          <Server /> {fa ? "ذخیره‌سازی مشترک داده" : "shared data stores"}
         </span>
       </div>
     </div>

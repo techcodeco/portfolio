@@ -1,61 +1,56 @@
-# TechCodeCo Portfolio (Next.js)
+# Mohammad Afrouzeh | TECHCODE
 
-A neon-inspired, bilingual (EN/FA), dark/light responsive portfolio migrated from Vite to Next.js App Router. The existing copy, color system, layout, motion values and CSS styling are preserved.
+**Code • Build • Level Up**
 
-## Requirements
+A bilingual (English/Persian) personal portfolio built with Next.js App Router and React. The visual system follows the TECHCODE identity: deep navy surfaces, electric blue and cyan accents, subtle violet highlights, and responsive glass-inspired components.
 
-- Node.js 20.9 or newer
-- npm 10 or newer
+## Tech stack
 
-## Install and run
+- **Framework:** Next.js 16, React 19
+- **Language:** JavaScript (ES modules, JSX)
+- **Motion:** Framer Motion, Lenis
+- **Icons:** Lucide React, React Icons
+- **SEO:** canonical URLs, language alternates, Open Graph, Twitter metadata, JSON-LD, sitemap and robots rules
+
+## Local development
+
+Requirements: Node.js 20.9 or newer and npm.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000. The old Vite lockfile was removed because it does not describe the Next.js dependency graph; `npm install` will generate a fresh `package-lock.json`.
+Open `http://localhost:3000`.
 
-## Production
+## Production build
 
 ```bash
+npm run lint
 npm run build
 npm start
 ```
 
-## Architecture
+## Project structure
 
-- `src/app`: App Router root layout, route and global stylesheet
-- `src/components/portfolio`: interactive page composition
-- `src/components/sections`: portfolio content sections and cards
-- `src/components/effects`: cursor, canvas and motion effects
-- `src/components/ui`: reusable UI primitives
-- `src/components/layout`: layout/lazy-rendering primitives
-- `src/components/terminal`: interactive terminal modal
-- `src/components/ParticleText` and `DepthText`: standalone visual components
-- `src/data`: portfolio copy, skill/project/certificate data and code samples
+- `src/app`: Next.js App Router pages, language routes, metadata, sitemap, robots and global styles
+- `src/components/layout`: navigation, footer and lazy-loading primitives
+- `src/components/sections`: hero, about, skills, architecture, projects and contact sections
+- `src/components/effects`: motion, canvas and visual effects
+- `src/components/terminal`: interactive TECHCODE profile terminal
+- `src/components/seo`: structured data
+- `src/data`: portfolio copy, project records, technologies and editor samples
+- `public`: favicon and social sharing image
 
-## Notes
+## Languages and SEO
 
-- The interactive portfolio is a Client Component because it relies on browser APIs, canvas, Framer Motion and Lenis. The root layout and route use the Next.js App Router.
-- The original Vite entry point and Vite configuration have been removed.
-- CSS parse errors were corrected without changing the design tokens or layout rules.
-- The existing certificate placeholders and generic GitHub project links have been retained as supplied; replace them with verifiable URLs before publishing.
+- English: <https://mohammadafrouzeh.ir/>
+- Persian: <https://mohammadafrouzeh.ir/fa>
+- Sitemap: <https://mohammadafrouzeh.ir/sitemap.xml>
+- Robots: <https://mohammadafrouzeh.ir/robots.txt>
 
+The site includes canonical URLs, `hreflang` alternates, Open Graph/Twitter metadata, Person/ProfilePage JSON-LD, and a custom 404 page for each language. After deployment, verify the domain in Google Search Console and Bing Webmaster Tools, then submit the sitemap. Search visibility is not guaranteed by metadata alone; keep project details accurate and publish useful technical writing over time.
 
-## SEO and language routes
+## Content accuracy
 
-- English portfolio: `https://mohammadafrouzeh.ir/`
-- Persian portfolio: `https://mohammadafrouzeh.ir/fa`
-- Sitemap: `https://mohammadafrouzeh.ir/sitemap.xml`
-- Robots: `https://mohammadafrouzeh.ir/robots.txt`
-- Canonical URLs, `hreflang`, Open Graph, Twitter metadata, and Person/ProfilePage JSON-LD are configured.
-
-After deployment, add the domain property `mohammadafrouzeh.ir` in Google Search Console, verify ownership with the DNS TXT record Google provides, submit `/sitemap.xml`, and inspect both `/` and `/fa`. Also register the site in Bing Webmaster Tools. Search rankings are not guaranteed by metadata alone; keep project descriptions accurate, link to each real repository/demo, and publish useful technical case studies over time.
-
-## Custom 404 pages
-
-- Unknown English routes render the custom TechCodeCo 404 page in the English root layout.
-- Unknown Persian routes under `/fa/*` render the Persian RTL version.
-- Catch-all routes call Next.js `notFound()` so the response uses the framework's real 404 handling and automatic `noindex` metadata.
-- The page reuses the existing palette, glass surfaces, grid motif, and responsive visual language.
+Only verified public contact links are shown: GitHub, LinkedIn and the professional email address. Placeholder certificate records, unsupported performance claims and invented personal metrics have been removed.

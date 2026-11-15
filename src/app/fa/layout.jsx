@@ -4,7 +4,7 @@ import { createPersianMetadata } from "@/lib/metadata";
 export const metadata = createPersianMetadata();
 
 export const viewport = {
-  themeColor: "#08080b",
+  themeColor: "#070D1B",
   colorScheme: "dark light",
 };
 

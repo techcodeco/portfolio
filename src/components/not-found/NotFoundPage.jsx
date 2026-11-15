@@ -11,7 +11,7 @@ import BackButton from "@/components/not-found/BackButton";
 const COPY = {
   en: {
     home: "/",
-    homeAriaLabel: "TechCodeCo homepage",
+    homeAriaLabel: "TECHCODE homepage",
     eyebrow: "ROUTE EXCEPTION // 404",
     title: "Looks like you took",
     highlight: "a wrong turn.",
@@ -31,14 +31,14 @@ const COPY = {
     ],
     terminalOutput: "// no matching route in this universe",
     footerLeft: "MOHAMMAD AFROUZEH",
-    footerCenter: "DESIGNED BY TECHCODECO",
+    footerCenter: "DESIGNED BY TECHCODE",
     footerRight: "ALL SYSTEMS NOMINAL",
     visualTop: "REQUEST TRACE",
     visualBottom: "END OF TRACE",
   },
   fa: {
     home: "/fa",
-    homeAriaLabel: "صفحه اصلی TechCodeCo",
+    homeAriaLabel: "صفحه اصلی TECHCODE",
     eyebrow: "خطای مسیر // 404",
     title: "این صفحه در",
     highlight: "نقشه ما نیست.",
@@ -58,7 +58,7 @@ const COPY = {
     ],
     terminalOutput: "// مسیر درخواستی در این پروژه پیدا نشد",
     footerLeft: "محمد افروزه",
-    footerCenter: "طراحی‌شده توسط TECHCODECO",
+    footerCenter: "طراحی‌شده توسط TECHCODE",
     footerRight: "وضعیت سیستم: عادی",
     visualTop: "ردیابی درخواست",
     visualBottom: "پایان ردیابی",
@@ -101,7 +101,7 @@ export default function NotFoundPage({ locale = "en" }) {
         <header className="nf-header">
           <Link className="nf-brand" href={copy.home} aria-label={copy.homeAriaLabel}>
             <span className="nf-brand-mark">&lt;/&gt;</span>
-            <span className="nf-brand-name">TECHCODECO</span>
+            <span className="nf-brand-name">TECHCODE</span>
           </Link>
 
           <div className="nf-status-pill">

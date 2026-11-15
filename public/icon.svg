@@ -1,4 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="15" fill="#08080b"/>
-  <path d="M18 20 8 32l10 12M46 20l10 12-10 12M37 14 27 50" fill="none" stroke="#d4ff3f" stroke-linecap="round" stroke-linejoin="round" stroke-width="4.5"/>
+  <defs>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8500FF"/>
+      <stop offset="1" stop-color="#008CFF"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#070D1B"/>
+  <path d="M24 17 10 32l14 15M40 17l14 15-14 15" fill="none" stroke="url(#brand)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+  <path d="m37 12-10 40" fill="none" stroke="#F4F8FF" stroke-width="3.5" stroke-linecap="round"/>
 </svg>

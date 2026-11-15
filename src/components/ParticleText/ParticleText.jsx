@@ -49,6 +49,10 @@ const ParticleText = ({
   text = "React Bits",
   particleSize = 2,
   density = 4,
+  mobileText = null,
+  mobileDensity = 2,
+  mobileParticleSize = 2,
+  mobileFontSize = null,
   color = "#ffffff",
   highlightColor = "#8b5cf6",
   scatter = 180,
@@ -64,6 +68,8 @@ const ParticleText = ({
   glow = true,
   className = "",
   style,
+  as = "div",
+  direction = "auto",
 }) => {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -197,6 +203,13 @@ const ParticleText = ({
     const sampleText = async () => {
       const currentBuild = ++buildId;
       const rect = container.getBoundingClientRect();
+      const isMobile =
+        window.matchMedia?.("(max-width: 700px)").matches ?? false;
+      const activeText = isMobile && mobileText ? mobileText : text;
+      const activeDensity = isMobile ? mobileDensity : density;
+      const activeParticleSize = isMobile ? mobileParticleSize : particleSize;
+      const activeFontSize =
+        isMobile && mobileFontSize ? mobileFontSize : fontSize;
       width = Math.floor(rect.width);
       height = Math.floor(rect.height);
       if (width <= 0 || height <= 0) return;
@@ -213,7 +226,7 @@ const ParticleText = ({
           ? computed.fontFamily || "sans-serif"
           : fontFamily;
       let resolvedSize = resolveFontSize(
-        fontSize,
+        activeFontSize,
         container,
         fontWeight,
         resolvedFamily,
@@ -225,41 +238,79 @@ const ParticleText = ({
       const offscreen = document.createElement("canvas");
       const offCtx = offscreen.getContext("2d", { willReadFrequently: true });
       if (!offCtx) return;
-      const content = String(text || " "),
-        maxTextWidth = width * 0.92;
+      const content = String(activeText || " ");
+      const lines = content.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+      const safeLines = lines.length ? lines : [" "];
+      const maxTextWidth = width * 0.92;
       offCtx.font = font;
-      let metrics = offCtx.measureText(content);
-      const measuredWidth = Math.max(1, metrics.width);
+      let lineMetrics = safeLines.map((line) => offCtx.measureText(line));
+      let measuredWidth = Math.max(
+        1,
+        ...lineMetrics.map((metrics) => metrics.width),
+      );
       if (measuredWidth > maxTextWidth) {
         resolvedSize = Math.max(
-          18,
+          isMobile ? 16 : 18,
           resolvedSize * (maxTextWidth / measuredWidth),
         );
         font = `${fontWeight} ${resolvedSize}px ${resolvedFamily}`;
         await waitForFonts(font);
         if (currentBuild !== buildId) return;
         offCtx.font = font;
-        metrics = offCtx.measureText(content);
+        lineMetrics = safeLines.map((line) => offCtx.measureText(line));
+        measuredWidth = Math.max(
+          1,
+          ...lineMetrics.map((metrics) => metrics.width),
+        );
       }
-      const left = Math.ceil(metrics.actualBoundingBoxLeft || 0);
-      const right = Math.ceil(metrics.actualBoundingBoxRight || metrics.width);
       const ascent = Math.ceil(
-        metrics.actualBoundingBoxAscent || resolvedSize * 0.78,
+        Math.max(
+          ...lineMetrics.map(
+            (metrics) => metrics.actualBoundingBoxAscent || resolvedSize * 0.78,
+          ),
+        ),
       );
       const descent = Math.ceil(
-        metrics.actualBoundingBoxDescent || resolvedSize * 0.22,
+        Math.max(
+          ...lineMetrics.map(
+            (metrics) => metrics.actualBoundingBoxDescent || resolvedSize * 0.22,
+          ),
+        ),
       );
       const padding = Math.max(12, Math.ceil(resolvedSize * 0.08));
-      const textWidth = Math.max(1, left + right),
-        textHeight = Math.max(1, ascent + descent);
+      const lineHeight = Math.ceil(resolvedSize * (safeLines.length > 1 ? 1.22 : 1));
+      const visualWidth = Math.max(
+        1,
+        ...lineMetrics.map((metrics) =>
+          Math.max(
+            metrics.width,
+            (metrics.actualBoundingBoxLeft || 0) +
+              (metrics.actualBoundingBoxRight || metrics.width),
+          ),
+        ),
+      );
+      const textWidth = Math.ceil(visualWidth);
+      const textHeight = Math.max(
+        1,
+        ascent + descent + (safeLines.length - 1) * lineHeight,
+      );
       offscreen.width = textWidth + padding * 2;
       offscreen.height = textHeight + padding * 2;
       offCtx.clearRect(0, 0, offscreen.width, offscreen.height);
       offCtx.font = font;
-      offCtx.textAlign = "left";
+      const resolvedDirection =
+        direction === "auto" ? window.getComputedStyle(container).direction : direction;
+      offCtx.direction = resolvedDirection === "rtl" ? "rtl" : "ltr";
+      offCtx.textAlign = "center";
       offCtx.textBaseline = "alphabetic";
       offCtx.fillStyle = "#fff";
-      offCtx.fillText(content, padding - left, padding + ascent);
+      safeLines.forEach((line, lineIndex) => {
+        offCtx.fillText(
+          line,
+          offscreen.width / 2,
+          padding + ascent + lineIndex * lineHeight,
+        );
+      });
       const imageData = offCtx.getImageData(
           0,
           0,
@@ -267,7 +318,7 @@ const ParticleText = ({
           offscreen.height,
         ),
         targets = [];
-      const step = Math.max(2, Math.floor(density));
+      const step = Math.max(2, Math.floor(activeDensity));
       for (let y = 0; y < offscreen.height; y += step)
         for (let x = 0; x < offscreen.width; x += step) {
           const alpha = imageData.data[(y * offscreen.width + x) * 4 + 3];
@@ -278,10 +329,9 @@ const ParticleText = ({
               alpha: alpha / 255,
             });
         }
-      const maxParticles = Math.max(
-        900,
-        Math.min(5200, Math.floor((width * height) / 90)),
-      );
+      const maxParticles = isMobile
+        ? Math.max(2000, Math.min(7800, Math.floor((width * height) / 36)))
+        : Math.max(900, Math.min(5200, Math.floor((width * height) / 90)));
       const stride = Math.max(1, Math.ceil(targets.length / maxParticles));
       const baseRgb = hexToRgb(color),
         highlightRgb = hexToRgb(highlightColor);
@@ -316,7 +366,10 @@ const ParticleText = ({
             startY,
             targetX: target.x,
             targetY: target.y,
-            size: Math.max(0.6, particleSize * (0.75 + target.alpha * 0.45)),
+            size: Math.max(
+              0.6,
+              activeParticleSize * (0.75 + target.alpha * 0.45),
+            ),
             color: particleColor,
             seed,
             depth,
@@ -398,8 +451,13 @@ const ParticleText = ({
     };
   }, [
     text,
+    direction,
     particleSize,
     density,
+    mobileText,
+    mobileDensity,
+    mobileParticleSize,
+    mobileFontSize,
     color,
     highlightColor,
     scatter,
@@ -415,11 +473,14 @@ const ParticleText = ({
     glow,
   ]);
 
+  const Element = as;
+
   return (
-    <div
+    <Element
       ref={containerRef}
       className={`particle-text ${className}`}
       style={style}
+      dir={direction === "auto" ? undefined : direction}
       aria-label={text}
     >
       <canvas
@@ -428,7 +489,7 @@ const ParticleText = ({
         aria-hidden="true"
       />
       <span className="particle-text__sr">{text}</span>
-    </div>
+    </Element>
   );
 };
 

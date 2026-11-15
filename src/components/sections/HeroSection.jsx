@@ -2,55 +2,87 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight, Github, MousePointer2 } from "lucide-react";
-import ParticleText from "@/components/ParticleText/ParticleText";
 import CodeEditor from "@/components/sections/CodeEditor";
+import ParticleText from "@/components/ParticleText/ParticleText";
 import Magnetic from "@/components/ui/Magnetic";
+import Stat from "@/components/ui/Stat";
 
-export default function HeroSection({ t, dark, heroY, onNavigate }) {
+export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
   return (
     <section id="home" className="hero">
       <motion.div className="hero-aurora" style={{ y: heroY }} />
       <div className="container hero-grid">
-        <div className="hero-copy">
+        <div className="hero-copy" id="about">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: 0.25 }}
             className="eyebrow"
           >
             <i /> {t.ey}
           </motion.div>
-          <h1 className="visually-hidden">{t.title}</h1>
+
+          <motion.h1
+            className="hero-name"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.65 }}
+          >
+            {t.title}
+          </motion.h1>
+
           <ParticleText
+            as="h2"
+            direction={rtl ? "rtl" : "ltr"}
             className="hero-particle-title"
-            text={t.title}
-            color={dark ? "#f3eeff" : "#17171f"}
-            highlightColor={dark ? "#d4ff3f" : "#e51f4d"}
-            particleSize={2.4}
+            text={t.heroSubtitle}
+            mobileText={
+              rtl
+                ? "مهندسی با دقت،\nمنطق و هدف."
+                : "Engineering with clarity\nand purpose."
+            }
+            mobileDensity={2}
+            mobileParticleSize={2}
+            mobileFontSize="clamp(1.25rem, 6vw, 2rem)"
+            color={dark ? "#F3EEFF" : "#172033"}
+            highlightColor={dark ? "#B026FF" : "#7C3AED"}
+            particleSize={2.2}
             density={3}
-            scatter={180}
-            gatherDuration={1600}
-            stagger={420}
-            pointerRepel={40}
-            repelRadius={120}
-            idleDrift={0.5}
+            scatter={150}
+            gatherDuration={1450}
+            stagger={360}
+            pointerRepel={30}
+            repelRadius={112}
+            idleDrift={0.22}
             trigger="hover"
-            fontSize="clamp(4rem, 15vw, 10rem)"
-            fontWeight={600}
+            fontSize="clamp(1.45rem, 3.1vw, 2.35rem)"
+            fontWeight={720}
             fontFamily="inherit"
             glow
           />
+
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            className="hero-intro"
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1 }}
+            transition={{ delay: 0.72, duration: 0.6 }}
           >
             {t.desc}
           </motion.p>
+
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            className="stats hero-stats"
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1 }}
+            transition={{ delay: 0.84, duration: 0.55 }}
+          >
+            <Stat v="API" l={t.focus} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.96, duration: 0.55 }}
             className="actions"
           >
             <Magnetic onClick={() => onNavigate("projects")} primary>
@@ -62,11 +94,12 @@ export default function HeroSection({ t, dark, heroY, onNavigate }) {
               {t.git}
             </Magnetic>
           </motion.div>
+
           <div className="meta">
             <span>
               <b /> {t.available}
             </span>
-            <span>React · Node · Bun · Redis</span>
+            <span>TypeScript · Node.js · Bun · React · Redis · MongoDB</span>
           </div>
         </div>
         <CodeEditor />

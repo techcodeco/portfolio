@@ -1,6 +1,6 @@
 "use client";
 
-import { SiReact, SiJavascript, SiNodedotjs, SiMongodb, SiPostgresql, SiRedis, SiDocker, SiTypescript } from "react-icons/si";
+import { SiReact, SiJavascript, SiNodedotjs, SiMongodb, SiRedis, SiDocker, SiTypescript, SiBun } from "react-icons/si";
 import Reveal from "@/components/ui/Reveal";
 
 export default function PoweredBy({ lang = "en" }) {
@@ -57,9 +57,9 @@ export default function PoweredBy({ lang = "en" }) {
       path: "M 770 112 H 695 V 145 H 615 V 185 H 555 V 236 H 515",
     },
     {
-      name: "PostgreSQL",
-      Icon: SiPostgresql,
-      color: "#4FA8FF",
+      name: "Bun",
+      Icon: SiBun,
+      color: "#FBF0DF",
       side: "right",
       cx: 808,
       cy: 250,
@@ -113,7 +113,7 @@ export default function PoweredBy({ lang = "en" }) {
           <div className="powered-grid" aria-hidden="true" />
           <svg
             className="powered-svg"
-            viewBox="0 0 900 560"
+            viewBox="0 0 900 500"
             preserveAspectRatio="xMidYMid meet"
             role="img"
             aria-label="Technology icons connected to a central integrated circuit"
@@ -138,7 +138,7 @@ export default function PoweredBy({ lang = "en" }) {
               </radialGradient>
             </defs>
 
-            <g transform="translate(0 -15) scale(1 0.88)">
+            <g transform="translate(0 -32) scale(1 0.92)">
               {nodes.map((node, index) => {
                 const Icon = node.Icon;
                 return (
@@ -268,7 +268,7 @@ export default function PoweredBy({ lang = "en" }) {
             <span>
               <i /> SIGNAL FLOW ACTIVE
             </span>
-            <span>8 TECHNOLOGIES // 1 SYSTEM</span>
+            <span>8 CORE TECHNOLOGIES // ONE TECHCODE SYSTEM</span>
           </div>
         </div>
       </div>

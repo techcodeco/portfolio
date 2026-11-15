@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Terminal } from "lucide-react";
 import { CODE_SAMPLES } from "@/data/code-samples";
 
 export default function CodeEditor() {
   const [mode, setMode] = useState("ts");
   const [typed, setTyped] = useState(0);
+  const reduceMotion = useReducedMotion();
   const sample = CODE_SAMPLES[mode];
 
   // محاسبه متن کامل برای شمارش کاراکترها
@@ -16,12 +17,17 @@ export default function CodeEditor() {
   }, [sample]);
 
   useEffect(() => {
+    if (reduceMotion) {
+      setTyped(fullText.length);
+      return undefined;
+    }
+
     setTyped(0);
-    const interval = setInterval(() => {
+    const interval = window.setInterval(() => {
       setTyped((prev) => (prev < fullText.length ? prev + 1 : prev));
     }, 15);
-    return () => clearInterval(interval);
-  }, [mode, fullText]);
+    return () => window.clearInterval(interval);
+  }, [mode, fullText, reduceMotion]);
 
   // رندر خطوط با هایلایت و تایپ‌رایتر
   const renderLines = () => {
@@ -61,7 +67,7 @@ export default function CodeEditor() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 40, rotate: 2 }}
+      initial={reduceMotion ? false : { opacity: 0, x: 40, rotate: 2 }}
       animate={{ opacity: 1, x: 0, rotate: 0 }}
       transition={{ delay: 0.65, duration: 0.9 }}
       className="editor glass"

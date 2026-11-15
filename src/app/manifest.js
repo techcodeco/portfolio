@@ -1,12 +1,12 @@
 export default function manifest() {
   return {
-    name: "Mohammad Afrouzeh | TechCodeCo",
-    short_name: "Mohammad Afrouzeh",
-    description: "Full-stack developer and programmer portfolio of Mohammad Afrouzeh.",
+    name: "Mohammad Afrouzeh | TECHCODE",
+    short_name: "TECHCODE",
+    description: "Personal portfolio of Mohammad Afrouzeh — Full-Stack Developer and Backend Engineer.",
     start_url: "/",
     display: "standalone",
-    background_color: "#08080b",
-    theme_color: "#08080b",
+    background_color: "#070D1B",
+    theme_color: "#070D1B",
     icons: [
       {
         src: "/icon.svg",

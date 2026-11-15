@@ -11,7 +11,8 @@ export default function Loader() {
     >
       <div className="loader-inner">
         <div className="loader-logo">&lt;/&gt;</div>
-        <strong>TECHCODECO</strong>
+        <strong>TECHCODE</strong>
+        <span>Code • Build • Level Up</span>
         <span>initializing systems...</span>
         <div className="loaderbar">
           <i />

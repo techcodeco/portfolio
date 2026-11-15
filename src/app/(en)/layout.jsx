@@ -4,7 +4,7 @@ import { createEnglishMetadata } from "@/lib/metadata";
 export const metadata = createEnglishMetadata();
 
 export const viewport = {
-  themeColor: "#08080b",
+  themeColor: "#070D1B",
   colorScheme: "dark light",
 };
 

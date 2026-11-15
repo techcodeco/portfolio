@@ -10,11 +10,9 @@ import SiteHeader from "@/components/layout/SiteHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
 import TechMarquee from "@/components/layout/TechMarquee";
 import HeroSection from "@/components/sections/HeroSection";
-import AboutSection from "@/components/sections/AboutSection";
 import SkillsSection from "@/components/sections/SkillsSection";
 import ArchitectureSection from "@/components/sections/ArchitectureSection";
 import ProjectsSection from "@/components/sections/ProjectsSection";
-import CertificatesSection from "@/components/sections/CertificatesSection";
 import ContactSection from "@/components/sections/ContactSection";
 import PoweredBy from "@/components/sections/PoweredBy";
 import ModernTechStack from "@/components/sections/ModernTechStack";
@@ -67,7 +65,7 @@ export default function PortfolioApp({ initialLang = "en" }) {
     document.documentElement.lang = lang;
     document.documentElement.dir = rtl ? "rtl" : "ltr";
     document.body.dataset.theme = dark ? "dark" : "light";
-    const timeoutId = window.setTimeout(() => setLoaded(true), 1000);
+    const timeoutId = window.setTimeout(() => setLoaded(true), reduce ? 0 : 700);
     return () => window.clearTimeout(timeoutId);
   }, [lang, rtl, dark]);
 
@@ -78,6 +76,9 @@ export default function PortfolioApp({ initialLang = "en" }) {
 
   return (
     <div className="app">
+      <a className="skip-link" href="#main-content">
+        {rtl ? "پرش به محتوای اصلی" : "Skip to main content"}
+      </a>
       <AnimatePresence>{!loaded && <Loader />}</AnimatePresence>
       <ScrollProgress progress={progress} />
       <Cursor />
@@ -92,24 +93,22 @@ export default function PortfolioApp({ initialLang = "en" }) {
         onNavigate={navigateTo}
       />
 
-      <main>
-        <HeroSection t={t} dark={dark} heroY={heroY} onNavigate={navigateTo} />
+      <main id="main-content">
+        <HeroSection t={t} rtl={rtl} dark={dark} heroY={heroY} onNavigate={navigateTo} />
         <TechMarquee items={TECH.slice(0, 10)} reverse minHeight={62} />
-        <LazySection minHeight={760}>
+        <LazySection minHeight={900}>
           <ModernTechStack lang={lang} />
         </LazySection>
-        <AboutSection t={t} />
         <SkillsSection t={t} tech={TECH} />
-        <TechMarquee items={TECH.slice(6, 16)} minHeight={110} />
+        <TechMarquee items={TECH.slice(6, 14)} minHeight={110} />
         <ArchitectureSection t={t} lang={lang} />
         <ProjectsSection t={t} projects={rtl ? PROJECTS_FA : PROJECTS} />
-        <CertificatesSection lang={lang} />
+        <LazySection id="powered-by" minHeight={620}>
+          <PoweredBy lang={lang} />
+        </LazySection>
         <ContactSection t={t} />
       </main>
 
-      <LazySection id="powered-by" minHeight={520}>
-        <PoweredBy lang={lang} />
-      </LazySection>
       <SiteFooter text={t.footer} onNavigate={navigateTo} />
 
       <AnimatePresence>

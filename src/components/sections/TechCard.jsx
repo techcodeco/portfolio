@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 
 export default function TechCard({ x, i }) {
   const Icon = x.icon;
+
   return (
     <motion.article
       className="tech glass"
@@ -11,25 +12,16 @@ export default function TechCard({ x, i }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: i * 0.025 }}
-      whileHover={{ y: -9, rotateX: 2, rotateY: -2 }}
+      whileHover={{ y: -7 }}
     >
       <div className="techicon" style={{ color: x.color }}>
-        <Icon />
+        <Icon aria-hidden="true" />
       </div>
       <div className="techbody">
         <div className="techtop">
           <strong>{x.name}</strong>
-          <b>{x.level}%</b>
         </div>
         <small>{x.category}</small>
-        <div className="meter">
-          <motion.i
-            initial={{ width: 0 }}
-            whileInView={{ width: x.level + "%" }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-          />
-        </div>
       </div>
     </motion.article>
   );

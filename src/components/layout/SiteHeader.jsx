@@ -16,14 +16,14 @@ export default function SiteHeader({
 
   return (
     <header className="header">
-      <nav className="nav glass">
-        <button className="brand" onClick={() => onNavigate("home")}>
+      <nav className="nav glass" aria-label="Primary navigation">
+        <button className="brand" type="button" onClick={() => onNavigate("home")} aria-label="TECHCODE home">
           <span className="brandbox">&lt;/&gt;</span>
-          <span>TECHCODECO</span>
+          <span>TECHCODE</span>
         </button>
         <div className={"links " + (menu ? "open" : "")}>
           {t.nav.map((label, index) => (
-            <button key={label} onClick={() => onNavigate(sectionIds[index])}>
+            <button key={label} type="button" onClick={() => onNavigate(sectionIds[index])}>
               {label}
             </button>
           ))}

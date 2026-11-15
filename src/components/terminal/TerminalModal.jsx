@@ -24,13 +24,13 @@ export default function TerminalModal({ close }) {
       out = [
         "Available commands:",
         "  ls              list current directory",
-        "  cd <path>       enter brain or heart",
+        "  cd <path>       enter stack or about",
         "  pwd             print current path",
-        "  cat <tech>      show skill level and progress",
-        "  tree            show techcodeOS tree",
+        "  cat <field>     read a stack skill or profile field",
+        "  tree            show TECHCODE profile tree",
         "  whoami          show developer profile",
         "  time            show current system time",
-        "  neofetch        show techcodeOS system summary",
+        "  neofetch        show TECHCODE profile summary",
         "  find <name>     search technologies",
         "  echo <text>     print text",
         "  clear           clear terminal",
@@ -43,80 +43,89 @@ export default function TerminalModal({ close }) {
     } else if (op === "pwd") out = [path];
     else if (op === "ls")
       out =
-        cwd[0] === "brain"
+        cwd[0] === "stack"
           ? techNames.map((n) => `${n}.skill`)
-          : cwd[0] === "heart"
-            ? ["discipline", "curiosity", "hard-work", "consistency"]
-            : ["brain/", "heart/"];
+          : cwd[0] === "about"
+            ? ["name", "role", "brand", "focus", "github"]
+            : ["stack/", "about/"];
     else if (op === "cd") {
       const target = (arg || "/").replace(/^\//, "").split("/").filter(Boolean);
       if (!arg || arg === "/" || arg === "~") setCwd([]);
       else if (arg === "..") setCwd(cwd.slice(0, -1));
       else if (
-        (target[0] === "brain" || target[0] === "heart") &&
+        (target[0] === "stack" || target[0] === "about") &&
         target.length === 1
       )
         setCwd(target);
       else out = [`cd: no such path: ${arg}`];
     } else if (op === "cat") {
-      if (cwd[0] !== "brain") out = ["cat: enter /brain first. Try: cd brain"];
-      else {
-        const key = arg.toLowerCase().replace(/\.skill$/, "");
+      if (cwd[0] === "about") {
+        const profile = {
+          name: "Mohammad Afrouzeh",
+          role: "Full-Stack Developer | Backend Engineer",
+          brand: "TECHCODE — Code • Build • Level Up",
+          focus: "TypeScript, Node.js, APIs and modular architecture",
+          github: "https://github.com/techcodeco",
+        };
+        const value = profile[arg.toLowerCase()];
+        out = value ? [value] : ["cat: profile field not found. Try ls"];
+      } else if (cwd[0] !== "stack") {
+        out = ["cat: enter /stack or /about first. Try: cd stack"];
+      } else {
+        const key = arg.toLowerCase().replace(/\.skill$/, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
         const t = TERMINAL_TECH[key];
         out = t
           ? [
               `${t.name}.skill`,
               `category : ${t.category}`,
-              `level    : ${t.level}%`,
-              `status   : ${t.level >= 90 ? "expert" : "strong"}`,
-              `progress : ${"█".repeat(Math.round(t.level / 10))}${"░".repeat(10 - Math.round(t.level / 10))} ${t.level}%`,
+              "status   : part of my technology stack",
             ]
           : ["cat: technology not found. Try ls"];
       }
     } else if (op === "whoami")
       out = [
-        "Mohammad Afrwzeh",
-        "Full-Stack Developer",
-        "Focus: scalable systems, high-performance APIs, clean architecture",
+        "Mohammad Afrouzeh",
+        "Full-Stack Developer | Backend Engineer",
+        "Brand: TECHCODE",
+        "Focus: TypeScript, Node.js, APIs and modular architecture",
         "github: github.com/techcodeco",
       ];
     else if (op === "time")
       out = [new Date().toLocaleString(undefined, { hour12: false })];
     else if (op === "neofetch")
       out = [
-        "techcodeOS v6.0",
+        "TECHCODE shell v1.0",
         "────────────────────────",
-        "OS       techcodeOS",
-        "USER     techcode",
-        "SHELL    body-terminal",
+        "BRAND    TECHCODE",
+        "USER     Mohammad Afrouzeh",
+        "SHELL    portfolio-terminal",
         "ROLE     Full-Stack Developer",
-        `BRAIN    ${techNames.length} technologies`,
-        "HEART    discipline + curiosity",
-        "STATUS   ONLINE ♥",
-        "BP       120/80 mmHg",
-        "HR       72 bpm",
-        "LOAD     building...",
+        `STACK    ${techNames.length} technologies`,
+        "FOCUS    Backend + APIs",
+        "STATUS   PROFILE READY",
+        "MODE     BUILD / SHIP / LEVEL UP",
       ];
     else if (op === "tree")
       out = [
         "/root",
-        "├── brain/",
+        "├── stack/",
         "│   ├── " +
           techNames
             .slice(0, 5)
             .map((n) => n + ".skill")
             .join("\n│   ├── "),
         "│   └── ...",
-        "└── heart/",
-        "    ├── discipline",
-        "    ├── curiosity",
-        "    ├── hard-work",
-        "    └── consistency",
+        "└── about/",
+        "    ├── name",
+        "    ├── role",
+        "    ├── brand",
+        "    ├── focus",
+        "    └── github",
       ];
     else if (op === "find")
       out = techNames
-        .filter((n) => n.includes(arg.toLowerCase()))
-        .map((n) => `/brain/${n}.skill`);
+        .filter((n) => n.toLowerCase().includes(arg.toLowerCase()))
+        .map((n) => `/stack/${n}.skill`);
     else if (op === "echo") out = [arg];
     else out = [`${op}: command not found. Type 'help'.`];
     setHistory((h) => [...h, { cmd, out, path }]);
@@ -137,6 +146,8 @@ export default function TerminalModal({ close }) {
   return (
     <motion.div
       className="modal terminal-modal"
+      dir="ltr"
+      role="presentation"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -144,34 +155,37 @@ export default function TerminalModal({ close }) {
     >
       <motion.div
         className="body-terminal"
+        dir="ltr"
+        role="dialog"
+        aria-modal="true"
+        aria-label="TECHCODE portfolio terminal"
         initial={{ scale: 0.92, y: 25 }}
         animate={{ scale: 1, y: 0 }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="terminal-head">
+        <div className="terminal-head" dir="ltr">
           <div className="terminal-title">
-            <span className="pulse" /> techcodeOS <b>::</b> body-terminal
+            <span className="pulse" /> TECHCODE <b>::</b> portfolio-terminal
           </div>
           <div className="terminal-vitals">
-            <span>♥ 72 bpm</span>
-            <span>BP 120/80</span>
-            <span>USER techcode</span>
-            <button onClick={close}>
+            <span>BUILD / SHIP / LEVEL UP</span>
+            <span>USER techcodeco</span>
+            <button onClick={close} type="button" aria-label="Close terminal">
               <X size={15} />
             </button>
           </div>
         </div>
         <div
           className="terminal-screen"
+          dir="ltr"
           ref={screenRef}
           onClick={() => inputRef.current?.focus()}
         >
           <div className="bootline">
-            techcodeOS v6.0 — body terminal initialized
+            TECHCODE shell v1.0 — terminal initialized
           </div>
           <div className="bootline">
-            heartbeat stable · pressure nominal · brain mounted at /brain ·
-            heart mounted at /heart
+            profile loaded · technology stack mounted · ready for commands
           </div>
           <div className="bootline">
             Type <b>help</b> to begin.
@@ -209,14 +223,15 @@ export default function TerminalModal({ close }) {
               }}
               autoComplete="off"
               spellCheck="false"
+              dir="ltr"
             />
           </div>
         </div>
-        <div className="terminal-footer">
-          <span>techcodeOS</span>
-          <span>brain {techNames.length} skills</span>
-          <span>heart online</span>
-          <span>dracula theme</span>
+        <div className="terminal-footer" dir="ltr">
+          <span>TECHCODE shell</span>
+          <span>stack {techNames.length} technologies</span>
+          <span>system online</span>
+          <span>TECHCODE neon theme</span>
         </div>
       </motion.div>
     </motion.div>
