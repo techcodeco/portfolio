@@ -33,7 +33,7 @@ npm start
 
 ## Project structure
 
-- `src/app`: Next.js App Router pages, language routes, metadata, sitemap, robots and global styles
+- `src/app`: Next.js App Router pages, language routes, metadata, sitemap, robots, localized error boundaries and global styles
 - `src/components/layout`: navigation, footer and lazy-loading primitives
 - `src/components/sections`: hero, about, skills, architecture, projects and contact sections
 - `src/components/effects`: motion, canvas and visual effects
@@ -50,7 +50,7 @@ npm start
 - Sitemap: <https://mohammadafrouzeh.ir/sitemap.xml>
 - Robots: <https://mohammadafrouzeh.ir/robots.txt>
 
-The site includes canonical URLs, `hreflang` alternates, Open Graph/Twitter metadata, Person/ProfilePage JSON-LD, and a custom 404 page for each language. After deployment, verify the domain in Google Search Console and Bing Webmaster Tools, then submit the sitemap. Search visibility is not guaranteed by metadata alone; keep project details accurate and publish useful technical writing over time.
+The site includes canonical URLs, `hreflang` alternates, Open Graph/Twitter metadata, Person/ProfilePage JSON-LD, localized custom 404 pages, localized 500 error boundaries and a root-level global error fallback. Error screens include retry/home actions and an email-based issue report link. After deployment, verify the domain in Google Search Console and Bing Webmaster Tools, then submit the sitemap. Search visibility is not guaranteed by metadata alone; keep project details accurate and publish useful technical writing over time.
 
 ## Content accuracy
 

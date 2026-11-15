@@ -23,18 +23,43 @@ export default function CodeEditor() {
     }
 
     setTyped(0);
-    const interval = window.setInterval(() => {
-      setTyped((prev) => {
-        if (prev >= fullText.length) {
-          window.clearInterval(interval);
-          return prev;
-        }
-        const next = prev + 1;
-        if (next >= fullText.length) window.clearInterval(interval);
-        return next;
-      });
-    }, 15);
-    return () => window.clearInterval(interval);
+    // Defer the decorative typing effect until the browser has had a chance
+    // to paint the hero. Four characters every 60ms preserve the previous
+    // average typing speed with one quarter as many React updates as v15.
+    const isMobile = window.matchMedia("(max-width: 700px)").matches;
+    const typingStep = isMobile ? 8 : 4;
+    const typingInterval = isMobile ? 120 : 60;
+    let interval = null;
+    let idleId = null;
+    let fallbackTimer = null;
+    let cancelled = false;
+
+    const startTyping = () => {
+      if (cancelled) return;
+      interval = window.setInterval(() => {
+        setTyped((prev) => {
+          const next = Math.min(prev + typingStep, fullText.length);
+          if (next >= fullText.length && interval !== null) {
+            window.clearInterval(interval);
+            interval = null;
+          }
+          return next;
+        });
+      }, typingInterval);
+    };
+
+    if ("requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(startTyping, { timeout: 1100 });
+    } else {
+      fallbackTimer = window.setTimeout(startTyping, 350);
+    }
+
+    return () => {
+      cancelled = true;
+      if (idleId !== null) window.cancelIdleCallback?.(idleId);
+      if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
+      if (interval !== null) window.clearInterval(interval);
+    };
   }, [mode, fullText, reduceMotion]);
 
   // رندر خطوط با هایلایت و تایپ‌رایتر

@@ -442,6 +442,10 @@ button {
     transparent
   );
 }
+.marquee:hover .marqueetrack,
+.marquee:focus-within .marqueetrack {
+  animation-play-state: paused;
+}
 .marqueetrack {
   display: flex;
   width: max-content;
@@ -4145,6 +4149,40 @@ body[data-theme="light"] .repo-preview-public { color: #66748B; border-color: rg
   user-select: text;
 }
 
+/* Apply one continuous name gradient; direction follows the language's reading order. */
+.hero h1.hero-name {
+  background: none;
+  color: var(--text);
+  -webkit-text-fill-color: currentColor;
+}
+.hero h1 .hero-name-gradient {
+  display: inline-block;
+  background-image: linear-gradient(
+    to right,
+    #7900f5 0%,
+    #a52bff 42%,
+    #eee8ff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.hero h1[dir="rtl"] .hero-name-gradient {
+  background-image: linear-gradient(
+    to left,
+    #7900f5 0%,
+    #a52bff 42%,
+    #eee8ff 100%
+  );
+}
+.hero-name-gradient .hero-name-first,
+.hero-name-gradient .hero-name-accent {
+  color: transparent;
+  background: none;
+  -webkit-text-fill-color: transparent;
+}
+
 /* Keep the owner name on one line at every viewport width. */
 .hero h1.hero-name {
   width: 100%;
@@ -4345,4 +4383,17 @@ body[data-theme="light"] .repo-preview-public { color: #66748B; border-color: rg
   .hero-intro-photo-wrap {
     width: min(80vw, 280px);
   }
+}
+
+
+/* Server-error boundary uses the same TECHCODE visual language as the custom 404. */
+.nf-server-panel .nf-actions { display: flex; }
+.nf-server-code > span:first-child,
+.nf-server-code > span:last-child {
+  background: linear-gradient(145deg, var(--text) 20%, #FF6B8A 92%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.nf-500-graphic > span:first-child,
+.nf-500-graphic > span:last-child {
+  -webkit-text-stroke: 1px rgba(255, 107, 138, .4);
 }

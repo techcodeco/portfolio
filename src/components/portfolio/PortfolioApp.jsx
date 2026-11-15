@@ -11,24 +11,25 @@ import {
   useScroll,
   useReducedMotion,
 } from "framer-motion";
-import Lenis from "lenis";
 import Loader from "@/components/effects/Loader";
-import Cursor from "@/components/effects/Cursor";
-import CodeCanvas from "@/components/effects/CodeCanvas";
+import DeferredVisualEffects from "@/components/effects/DeferredVisualEffects";
 import SiteHeader from "@/components/layout/SiteHeader";
 import SiteFooter from "@/components/layout/SiteFooter";
-import TechMarquee from "@/components/layout/TechMarquee";
-import HeroSection from "@/components/sections/HeroSection";
-import SkillsSection from "@/components/sections/SkillsSection";
-import ArchitectureSection from "@/components/sections/ArchitectureSection";
-import ProjectsSection from "@/components/sections/ProjectsSection";
-import ContactSection from "@/components/sections/ContactSection";
-import PoweredBy from "@/components/sections/PoweredBy";
-import ModernTechStack from "@/components/sections/ModernTechStack";
 import LazySection from "@/components/layout/LazySection";
+import HeroSection from "@/components/sections/HeroSection";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import TerminalLauncher from "@/components/terminal/TerminalLauncher";
 import { TECH, PROJECTS, PROJECTS_FA, COPY } from "@/data/portfolio-data";
+
+// Sections below the hero are split into independent client chunks. The
+// App Router still pre-renders their HTML, preserving crawlable page content.
+const TechMarquee = dynamic(() => import("@/components/layout/TechMarquee"));
+const SkillsSection = dynamic(() => import("@/components/sections/SkillsSection"));
+const ArchitectureSection = dynamic(() => import("@/components/sections/ArchitectureSection"));
+const ProjectsSection = dynamic(() => import("@/components/sections/ProjectsSection"));
+const ContactSection = dynamic(() => import("@/components/sections/ContactSection"));
+const PoweredBy = dynamic(() => import("@/components/sections/PoweredBy"));
+const ModernTechStack = dynamic(() => import("@/components/sections/ModernTechStack"));
 
 const TerminalModal = dynamic(
   () => import("@/components/terminal/TerminalModal"),
@@ -49,24 +50,48 @@ export default function PortfolioApp({ initialLang = "en" }) {
   useEffect(() => {
     if (reduce || window.matchMedia("(pointer: coarse)").matches) return;
 
-    const lenis = new Lenis({
-      duration: 1.15,
-      easing: (value) => 1 - Math.pow(1 - value, 4),
-      smoothWheel: true,
-      smoothTouch: false,
-      lerp: 0.08,
-    });
+    let cancelled = false;
+    let raf = 0;
+    let lenis = null;
+    let idleId = null;
+    let fallbackTimer = null;
 
-    let raf;
-    const loop = (time) => {
-      lenis.raf(time);
-      raf = requestAnimationFrame(loop);
+    const startSmoothScroll = async () => {
+      try {
+        const { default: Lenis } = await import("lenis");
+        if (cancelled) return;
+
+        lenis = new Lenis({
+          duration: 1.15,
+          easing: (value) => 1 - Math.pow(1 - value, 4),
+          smoothWheel: true,
+          smoothTouch: false,
+          lerp: 0.08,
+        });
+
+        const loop = (time) => {
+          if (!lenis || cancelled) return;
+          lenis.raf(time);
+          raf = requestAnimationFrame(loop);
+        };
+        raf = requestAnimationFrame(loop);
+      } catch {
+        // Native scrolling remains available if the optional enhancement fails.
+      }
     };
 
-    raf = requestAnimationFrame(loop);
+    if (typeof window.requestIdleCallback === "function") {
+      idleId = window.requestIdleCallback(startSmoothScroll, { timeout: 1400 });
+    } else {
+      fallbackTimer = window.setTimeout(startSmoothScroll, 450);
+    }
+
     return () => {
+      cancelled = true;
+      if (idleId !== null) window.cancelIdleCallback?.(idleId);
+      if (fallbackTimer !== null) window.clearTimeout(fallbackTimer);
       cancelAnimationFrame(raf);
-      lenis.destroy();
+      lenis?.destroy();
     };
   }, [reduce]);
 
@@ -78,8 +103,8 @@ export default function PortfolioApp({ initialLang = "en" }) {
     document.documentElement.lang = lang;
     document.documentElement.dir = rtl ? "rtl" : "ltr";
     document.body.dataset.theme = dark ? "dark" : "light";
-    const timeoutId = window.setTimeout(() => setLoaded(true), reduce ? 0 : 700);
-    return () => window.clearTimeout(timeoutId);
+    const frameId = window.requestAnimationFrame(() => setLoaded(true));
+    return () => window.cancelAnimationFrame(frameId);
   }, [lang, rtl, dark]);
 
   const navigateTo = (id) => {
@@ -95,8 +120,7 @@ export default function PortfolioApp({ initialLang = "en" }) {
         </a>
         <AnimatePresence>{!loaded && <Loader />}</AnimatePresence>
         <ScrollProgress progress={progress} />
-        <Cursor />
-        <CodeCanvas />
+        <DeferredVisualEffects />
         <SiteHeader
           menu={menu}
           setMenu={setMenu}

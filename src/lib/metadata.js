@@ -13,9 +13,9 @@ const sharedRobots = {
 };
 
 export function createEnglishMetadata() {
-  const title = "Mohammad Afrouzeh | Full-Stack Developer & Backend Engineer | TECHCODE";
+  const title = "Mohammad Afrouzeh | Full-Stack & Backend Developer";
   const description =
-    "Official portfolio of Mohammad Afrouzeh (محمد افروزه), software developer, Full-Stack Developer and Backend Engineer. Explore TypeScript, Node.js, React, API engineering and modular software architecture.";
+    "Official portfolio of Mohammad Afrouzeh, a Full-Stack and Backend Developer building web applications and modular services with TypeScript, Node.js, React and APIs.";
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -28,7 +28,10 @@ export function createEnglishMetadata() {
       "TECHCODE",
       "Software Developer",
       "Programmer",
+      "Web Developer",
       "Full-Stack Developer",
+      "Full-Stack Programmer",
+      "Backend Developer",
       "Backend Engineer",
       "TypeScript",
       "Node.js",
@@ -85,9 +88,9 @@ export function createEnglishMetadata() {
 }
 
 export function createPersianMetadata() {
-  const title = "محمد افروزه | توسعه‌دهنده فول‌استک و مهندس بک‌اند | TECHCODE";
+  const title = "محمد افروزه | برنامه‌نویس فول‌استک و مهندس بک‌اند";
   const description =
-    "وب‌سایت رسمی محمد افروزه (Mohammad Afrouzeh)، برنامه‌نویس و توسعه‌دهنده فول‌استک و مهندس بک‌اند؛ با تمرکز بر TypeScript، Node.js، React، طراحی API و معماری ماژولار نرم‌افزار.";
+    "وب‌سایت رسمی محمد افروزه، برنامه‌نویس وب و توسعه‌دهنده فول‌استک با تمرکز بر بک‌اند، TypeScript، Node.js، طراحی API و معماری نرم‌افزار.";
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -99,8 +102,12 @@ export function createPersianMetadata() {
       "Mohammad Afrouzeh",
       "TECHCODE",
       "برنامه‌نویس",
+      "برنامه نویس فول استک",
+      "برنامه‌نویس وب",
+      "توسعه‌دهنده وب",
       "توسعه‌دهنده فول‌استک",
       "مهندس بک‌اند",
+      "توسعه‌دهنده بک‌اند",
       "طراحی API",
       "TypeScript",
       "Node.js",

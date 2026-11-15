@@ -25,11 +25,15 @@ export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
 
           <m.h1
             className="hero-name"
+            dir={rtl ? "rtl" : "ltr"}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.65 }}
           >
-            {t.title}
+            <span className="hero-name-gradient">
+              <span className="hero-name-first">{rtl ? "محمد" : "Mohammad"}</span>{" "}
+              <span className="hero-name-accent">{rtl ? "افروزه" : "Afrouzeh"}</span>
+            </span>
           </m.h1>
 
           <ParticleText
@@ -40,11 +44,11 @@ export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
             mobileText={
               rtl
                 ? "مهندسی با دقت،\nمنطق و هدف."
-                : "Engineering with clarity\nand purpose."
+                : "Engineering with\nclarity and purpose."
             }
             mobileDensity={1}
-            mobileParticleSize={1.25}
-            mobileFontSize="clamp(1.25rem, 6vw, 2rem)"
+            mobileParticleSize={1.65}
+            mobileFontSize="clamp(1.15rem, 5.6vw, 1.85rem)"
             color={dark ? "#F3EEFF" : "#172033"}
             highlightColor={dark ? "#B026FF" : "#7C3AED"}
             particleSize={1.65}
@@ -73,11 +77,11 @@ export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
                 }
                 width={720}
                 height={720}
-                sizes="(max-width: 700px) 82vw, (max-width: 1100px) 190px, 210px"
+                sizes="(max-width: 380px) 80vw, (max-width: 700px) 310px, 216px"
+                quality={70}
                 className="hero-intro-photo"
-                unoptimized
                 loading="eager"
-                fetchPriority="low"
+                fetchPriority="high"
               />
             </div>
             <p className="hero-intro">{t.desc}</p>

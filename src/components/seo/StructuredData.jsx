@@ -4,8 +4,8 @@ export default function StructuredData({ locale = "en" }) {
   const isPersian = locale === "fa";
   const profileUrl = isPersian ? `${SITE_URL}/fa` : SITE_URL;
   const description = isPersian
-    ? "محمد افروزه، برنامه‌نویس و توسعه‌دهنده فول‌استک با تمرکز بر توسعه وب، اپلیکیشن‌های مقیاس‌پذیر، API و معماری بک‌اند."
-    : "Mohammad Afrouzeh is a full-stack developer focused on web development, scalable applications, backend APIs and software architecture.";
+    ? "محمد افروزه، برنامه‌نویس وب، توسعه‌دهنده فول‌استک و مهندس بک‌اند با تمرکز بر طراحی API و معماری نرم‌افزار."
+    : "Mohammad Afrouzeh is a software developer, Full-Stack Developer and Backend Engineer focused on web development, API design and modular software architecture.";
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -21,13 +21,15 @@ export default function StructuredData({ locale = "en" }) {
       },
       {
         "@type": "ProfilePage",
-        "@id": `${profileUrl}/#profilepage`,
+        "@id": `${profileUrl}/#webpage`,
         url: profileUrl,
         name: isPersian
           ? "پروفایل محمد افروزه | برنامه‌نویس فول‌استک"
           : "Mohammad Afrouzeh | Full-Stack Developer Profile",
         inLanguage: isPersian ? "fa-IR" : "en-US",
         mainEntity: { "@id": `${SITE_URL}/#person` },
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        about: { "@id": `${SITE_URL}/#person` },
       },
       {
         "@type": "Person",
@@ -35,8 +37,12 @@ export default function StructuredData({ locale = "en" }) {
         name: SITE_NAME,
         alternateName: ["محمد افروزه"],
         url: SITE_URL,
+        image: `${SITE_URL}/img/mohammad-afrouzeh.webp`,
         description,
-        jobTitle: "Full-Stack Developer and Backend Engineer",
+        jobTitle: isPersian
+          ? "برنامه‌نویس وب، توسعه‌دهنده فول‌استک و مهندس بک‌اند"
+          : "Software Developer, Full-Stack Developer and Backend Engineer",
+        mainEntityOfPage: { "@id": `${profileUrl}/#webpage` },
         brand: {
           "@type": "Brand",
           name: BRAND_NAME,

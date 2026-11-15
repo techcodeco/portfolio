@@ -86,6 +86,13 @@ const ParticleText = ({
       animationFrame = null,
       resizeFrame = null,
       buildId = 0;
+    // Keep initial sampling state local to this effect instance. These values
+    // are used by queueSample and must exist before ResizeObserver fires.
+    let initialSampleDone = false;
+    let initialSamplePending = false;
+    let sampleQueuedDuringInitial = false;
+    let initialIdleId = null;
+    let initialFallbackId = null;
     let gathering = false,
       gatherStart = 0;
     let reducedMotion =
@@ -95,13 +102,20 @@ const ParticleText = ({
       dpr = 1;
     let isIntersecting = false;
     let isMobileViewport = window.matchMedia?.("(max-width: 700px)").matches ?? false;
+    let activeIdleDrift = idleDrift;
+    let activePointerRepel = pointerRepel;
+    let activeScatter = scatter;
+    let activeGatherDuration = gatherDuration;
+    let activeStagger = stagger;
+    let cachedCanvasRect = null;
+    let boundsFrame = null;
     let lastRenderTime = 0;
     const pointer = { active: false, x: 0, y: 0, smoothX: 0, smoothY: 0 };
 
     const startGather = (fromScatter = true) => {
       if (!particles.length) return;
       const now = performance.now();
-      const spread = reducedMotion ? 0 : scatter;
+      const spread = reducedMotion ? 0 : activeScatter;
       particles.forEach((particle) => {
         if (fromScatter) {
           const angle = particle.seed * Math.PI * 2;
@@ -117,10 +131,11 @@ const ParticleText = ({
         }
         particle.startX = particle.x;
         particle.startY = particle.y;
-        particle.delay = reducedMotion ? 0 : particle.seed * stagger;
+        particle.delay = reducedMotion ? 0 : particle.seed * activeStagger;
       });
       gatherStart = now;
       gathering = true;
+      ensureRenderLoop();
     };
 
     const drawParticle = (particle) => {
@@ -136,20 +151,24 @@ const ParticleText = ({
     };
 
     const render = (now) => {
-      const frameInterval = isMobileViewport ? 1000 / 30 : 1000 / 60;
+      // Mobile uses a lower frame budget. After the staggered gather finishes,
+      // keep rendering until the easing-follow interpolation has fully settled;
+      // otherwise mobile particles freeze short of their target positions.
+      const frameInterval = isMobileViewport ? 1000 / 24 : 1000 / 60;
       if (!reducedMotion && now - lastRenderTime < frameInterval) {
         animationFrame = window.requestAnimationFrame(render);
         return;
       }
       lastRenderTime = now;
       ctx.clearRect(0, 0, width, height);
-      if (glow && !reducedMotion) {
+      if (glow && !reducedMotion && !isMobileViewport) {
         ctx.shadowBlur = particleSize * 3;
         ctx.shadowColor = highlightColor;
       } else ctx.shadowBlur = 0;
       pointer.smoothX += (pointer.x - pointer.smoothX) * 0.18;
       pointer.smoothY += (pointer.y - pointer.smoothY) * 0.18;
       let complete = true;
+      let positionsSettled = true;
       particles.forEach((particle) => {
         let baseX = particle.targetX,
           baseY = particle.targetY,
@@ -157,7 +176,7 @@ const ParticleText = ({
         if (gathering) {
           const local =
             (now - gatherStart - particle.delay) /
-            Math.max(1, reducedMotion ? 1 : gatherDuration);
+            Math.max(1, reducedMotion ? 1 : activeGatherDuration);
           progress = clamp(local, 0, 1);
           const eased = easeOutCubic(progress);
           baseX =
@@ -165,21 +184,21 @@ const ParticleText = ({
           baseY =
             particle.startY + (particle.targetY - particle.startY) * eased;
           if (progress < 1) complete = false;
-        } else if (!reducedMotion && idleDrift > 0) {
+        } else if (!reducedMotion && activeIdleDrift > 0) {
           const driftTime = now * 0.001;
           baseX +=
             Math.sin(driftTime * 0.9 + particle.seed * 10) *
-            idleDrift *
+            activeIdleDrift *
             particle.depth;
           baseY +=
             Math.cos(driftTime * 0.75 + particle.depth * 10) *
-            idleDrift *
+            activeIdleDrift *
             particle.depth;
         }
         if (
           pointer.active &&
           !reducedMotion &&
-          pointerRepel > 0 &&
+          activePointerRepel > 0 &&
           repelRadius > 0
         ) {
           const dx = baseX - pointer.smoothX,
@@ -187,23 +206,34 @@ const ParticleText = ({
             distance = Math.hypot(dx, dy);
           if (distance > 0 && distance < repelRadius) {
             const force =
-              Math.pow(1 - distance / repelRadius, 2) * pointerRepel;
+              Math.pow(1 - distance / repelRadius, 2) * activePointerRepel;
             baseX += (dx / distance) * force;
             baseY += (dy / distance) * force;
           }
         }
-        const follow = reducedMotion ? 1 : 0.22;
-        particle.x += (baseX - particle.x) * follow;
-        particle.y += (baseY - particle.y) * follow;
+        const deltaX = baseX - particle.x;
+        const deltaY = baseY - particle.y;
+        if (!reducedMotion && (Math.abs(deltaX) > 0.12 || Math.abs(deltaY) > 0.12)) {
+          positionsSettled = false;
+        }
+        // A slightly stronger mobile follow factor makes the letterforms lock
+        // into a crisp shape quickly without running a permanent animation loop.
+        const follow = reducedMotion ? 1 : isMobileViewport ? 0.42 : 0.22;
+        particle.x += deltaX * follow;
+        particle.y += deltaY * follow;
         ctx.globalAlpha = clamp(0.35 + progress * 0.65, 0, 1);
         drawParticle(particle);
       });
       ctx.globalAlpha = 1;
       ctx.shadowBlur = 0;
       if (gathering && complete) gathering = false;
-      animationFrame = reducedMotion
-        ? null
-        : window.requestAnimationFrame(render);
+      const settling = !positionsSettled;
+      const needsAnotherFrame =
+        !reducedMotion &&
+        (gathering || settling || activeIdleDrift > 0 || (pointer.active && activePointerRepel > 0));
+      animationFrame = needsAnotherFrame
+        ? window.requestAnimationFrame(render)
+        : null;
     };
 
     const ensureRenderLoop = () => {
@@ -221,6 +251,7 @@ const ParticleText = ({
     const sampleText = async () => {
       const currentBuild = ++buildId;
       const rect = container.getBoundingClientRect();
+      cachedCanvasRect = rect;
       const isMobile =
         window.matchMedia?.("(max-width: 700px)").matches ?? false;
       isMobileViewport = isMobile;
@@ -232,7 +263,16 @@ const ParticleText = ({
       width = Math.floor(rect.width);
       height = Math.floor(rect.height);
       if (width <= 0 || height <= 0) return;
-      dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      // Mobile canvas backing stores are intentionally capped lower to avoid
+      // multiplying raster work on high-DPI phones. Desktop remains crisp.
+      dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2.5);
+      activeIdleDrift = isMobile ? 0 : idleDrift;
+      activePointerRepel = isMobile ? 0 : pointerRepel;
+      // Keep mobile text quickly readable while retaining a gentle gather animation.
+      // Desktop keeps the full original scatter, duration, and stagger values.
+      activeScatter = isMobile ? Math.min(scatter, 85) : scatter;
+      activeGatherDuration = isMobile ? Math.min(gatherDuration, 1150) : gatherDuration;
+      activeStagger = isMobile ? Math.min(stagger, 220) : stagger;
       canvas.width = Math.max(1, Math.floor(width * dpr));
       canvas.height = Math.max(1, Math.floor(height * dpr));
       canvas.style.width = "100%";
@@ -297,7 +337,13 @@ const ParticleText = ({
         ),
       );
       const padding = Math.max(12, Math.ceil(resolvedSize * 0.08));
-      const lineHeight = Math.ceil(resolvedSize * (safeLines.length > 1 ? 1.22 : 1));
+      // Persian glyphs can extend farther vertically than Latin glyphs.
+      // Extra line separation prevents adjacent particle rows from merging.
+      const lineHeight = Math.ceil(
+        safeLines.length > 1
+          ? Math.max(resolvedSize * 1.46, ascent + descent + resolvedSize * 0.12)
+          : resolvedSize * 1.12,
+      );
       const visualWidth = Math.max(
         1,
         ...lineMetrics.map((metrics) =>
@@ -337,11 +383,13 @@ const ParticleText = ({
           offscreen.height,
         ),
         targets = [];
-      const step = Math.max(1, Math.floor(activeDensity));
+      // Use a full-pixel mobile sampling grid so thin Persian joins and Latin
+      // stems are not lost between sparse two-pixel sample columns.
+      const step = isMobile ? 1 : Math.max(1, Math.floor(activeDensity));
       for (let y = 0; y < offscreen.height; y += step)
         for (let x = 0; x < offscreen.width; x += step) {
           const alpha = imageData.data[(y * offscreen.width + x) * 4 + 3];
-          if (alpha > 40)
+          if (alpha > (isMobile ? 28 : 40))
             targets.push({
               x: width / 2 - offscreen.width / 2 + x,
               y: height / 2 - offscreen.height / 2 + y,
@@ -350,7 +398,11 @@ const ParticleText = ({
         }
       // A denser sampling cap keeps the particle typography crisp on high-DPI screens.
       // Rendering is paused outside the hero viewport to avoid wasting main-thread time.
-      const maxParticles = isMobile ? 6500 : 12000;
+      // The 1px mobile scan preserves thin joins and counters in both Persian
+      // and Latin text. A viewport-aware cap bounds the temporary animation cost.
+      const maxParticles = isMobile
+        ? Math.min(5200, Math.max(3600, Math.floor(width * 14)))
+        : 12000;
       const stride = Math.max(1, Math.ceil(targets.length / maxParticles));
       const baseRgb = hexToRgb(color),
         highlightRgb = hexToRgb(highlightColor);
@@ -369,15 +421,15 @@ const ParticleText = ({
               : color;
           const angle = seed * Math.PI * 2;
           const distance =
-            (reducedMotion ? 0 : scatter) * (0.35 + depth * 0.75);
+            (reducedMotion ? 0 : activeScatter) * (0.35 + depth * 0.75);
           const startX =
             target.x +
             Math.cos(angle) * distance +
-            (seed - 0.5) * scatter * 0.45;
+            (seed - 0.5) * activeScatter * 0.45;
           const startY =
             target.y +
             Math.sin(angle) * distance +
-            (depth - 0.9) * scatter * 0.45;
+            (depth - 0.9) * activeScatter * 0.45;
           return {
             x: reducedMotion ? target.x : startX,
             y: reducedMotion ? target.y : startY,
@@ -392,7 +444,7 @@ const ParticleText = ({
             color: particleColor,
             seed,
             depth,
-            delay: seed * stagger,
+            delay: seed * activeStagger,
           };
         });
       pointer.x = width / 2;
@@ -413,14 +465,54 @@ const ParticleText = ({
     };
 
     const queueSample = () => {
+      // Text rasterization and particle creation are deliberately scheduled
+      // after the first paint so they cannot compete with the hero/LCP render.
+      if (!initialSampleDone) {
+        if (initialSamplePending) {
+          sampleQueuedDuringInitial = true;
+          return;
+        }
+        initialSamplePending = true;
+        const runInitialSample = async () => {
+          initialIdleId = null;
+          initialFallbackId = null;
+          try {
+            await sampleText();
+          } finally {
+            initialSampleDone = true;
+            initialSamplePending = false;
+            if (sampleQueuedDuringInitial) {
+              sampleQueuedDuringInitial = false;
+              if (resizeFrame !== null) window.cancelAnimationFrame(resizeFrame);
+              resizeFrame = window.requestAnimationFrame(sampleText);
+            }
+          }
+        };
+        if (typeof window.requestIdleCallback === "function") {
+          initialIdleId = window.requestIdleCallback(runInitialSample, { timeout: 1200 });
+        } else {
+          initialFallbackId = window.setTimeout(runInitialSample, 320);
+        }
+        return;
+      }
       if (resizeFrame) window.cancelAnimationFrame(resizeFrame);
       resizeFrame = window.requestAnimationFrame(sampleText);
     };
+    const updateCachedBoundsOnScroll = () => {
+      if (boundsFrame !== null) return;
+      boundsFrame = window.requestAnimationFrame(() => {
+        cachedCanvasRect = container.getBoundingClientRect();
+        boundsFrame = null;
+      });
+    };
     const handlePointerMove = (event) => {
-      const rect = canvas.getBoundingClientRect();
+      // Use the last measured bounds instead of forcing layout on every pointermove.
+      const rect = cachedCanvasRect;
+      if (!rect) return;
       pointer.x = event.clientX - rect.left;
       pointer.y = event.clientY - rect.top;
       pointer.active = true;
+      if (activePointerRepel > 0) ensureRenderLoop();
     };
     const handlePointerLeave = () => {
       pointer.active = false;
@@ -459,6 +551,7 @@ const ParticleText = ({
       sampleText();
     };
     reduceMotionQuery?.addEventListener("change", handleReduceMotionChange);
+    window.addEventListener("scroll", updateCachedBoundsOnScroll, { passive: true });
     canvas.addEventListener("pointerenter", handlePointerEnter);
     canvas.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerleave", handlePointerLeave);
@@ -471,7 +564,7 @@ const ParticleText = ({
     } else {
       window.addEventListener("resize", handleWindowResize, { passive: true });
     }
-    sampleText();
+    queueSample();
     return () => {
       buildId += 1;
       resizeObserver?.disconnect();
@@ -482,12 +575,16 @@ const ParticleText = ({
         "change",
         handleReduceMotionChange,
       );
+      window.removeEventListener("scroll", updateCachedBoundsOnScroll);
+      if (boundsFrame !== null) window.cancelAnimationFrame(boundsFrame);
       canvas.removeEventListener("pointerenter", handlePointerEnter);
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerleave", handlePointerLeave);
       canvas.removeEventListener("click", handleClick);
       stopRenderLoop();
       if (resizeFrame !== null) window.cancelAnimationFrame(resizeFrame);
+      if (initialIdleId !== null) window.cancelIdleCallback?.(initialIdleId);
+      if (initialFallbackId !== null) window.clearTimeout(initialFallbackId);
     };
   }, [
     text,

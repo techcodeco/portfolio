@@ -7,6 +7,7 @@ import {
   Terminal,
 } from "lucide-react";
 import BackButton from "@/components/not-found/BackButton";
+import ReportProblemLink from "@/components/errors/ReportProblemLink";
 
 const COPY = {
   en: {
@@ -136,6 +137,7 @@ export default function NotFoundPage({ locale = "en" }) {
                 <ArrowUpRight className="nf-button-arrow" size={16} aria-hidden="true" />
               </Link>
               <BackButton locale={locale} label={copy.backLabel} homeHref={copy.home} />
+              <ReportProblemLink locale={locale} code="404" />
             </div>
 
             <div className="nf-small-note">

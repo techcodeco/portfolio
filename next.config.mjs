@@ -5,6 +5,13 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    // The intro portrait is rendered at ~184–310 CSS px. Smaller candidates
+    // avoid forcing a 640px response for a 228px desktop rendering.
+    imageSizes: [32, 48, 64, 96, 128, 160, 192, 256, 320, 384, 480],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    qualities: [70, 75],
+  },
   turbopack: {
     root: projectRoot,
   },

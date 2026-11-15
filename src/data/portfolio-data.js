@@ -127,12 +127,12 @@ export const PROJECTS_FA = [
 export const COPY = {
   en: {
     nav: ["About", "Stack", "Architecture", "Projects", "Contact"],
-    ey: "THE ENGINEER BEHIND THE CODE",
+    ey: "FULL-STACK DEVELOPER • BACKEND ENGINEER",
     title: "Mohammad Afrouzeh",
     heroSubtitle: "Engineering with clarity and purpose.",
     scrollHint: "scroll to explore",
     desc:
-      "I’m Mohammad Afrouzeh, a Full-Stack Developer with a strong focus on backend engineering, API design and software architecture. I enjoy building modular services, working with data systems, and turning complex ideas into practical, maintainable products. My day-to-day toolkit includes TypeScript, Node.js, Bun, React, Redis and MongoDB.",
+      "I’m Mohammad Afrouzeh, a software developer and Full-Stack Developer focused on backend engineering, API design and software architecture. I build web experiences and modular backend services, turning complex ideas into practical, maintainable products. My toolkit includes TypeScript, Node.js, Bun, React, Redis and MongoDB.",
     cta: "Explore projects",
     git: "GitHub profile",
     stackK: "TECHNOLOGIES I WORK WITH",
@@ -155,12 +155,12 @@ export const COPY = {
   },
   fa: {
     nav: ["درباره من", "تکنولوژی‌ها", "معماری", "پروژه‌ها", "ارتباط"],
-    ey: "مهندس پشت کدها",
+    ey: "برنامه‌نویس وب • توسعه‌دهنده فول‌استک • مهندس بک‌اند",
     title: "محمد افروزه",
     heroSubtitle: "مهندسی با دقت، منطق و هدف.",
     scrollHint: "برای مشاهده بیشتر اسکرول کنید",
     desc:
-      "من محمد افروزه (Mohammad Afrouzeh) هستم؛ توسعه‌دهنده فول‌استک با تمرکز ویژه بر مهندسی بک‌اند، طراحی API و معماری نرم‌افزار. از طراحی سرویس‌های ماژولار، کار با سیستم‌های داده و تبدیل ایده‌های پیچیده به محصولات کاربردی و قابل نگهداری لذت می‌برم. ابزارهای اصلی من TypeScript، Node.js، Bun، React، Redis و MongoDB هستند.",
+      "من محمد افروزه هستم؛ برنامه‌نویس وب، توسعه‌دهنده فول‌استک و مهندس بک‌اند با تمرکز بر طراحی API و معماری نرم‌افزار. در پروژه‌هایم تجربه‌های وب و سرویس‌های بک‌اند ماژولار می‌سازم و ایده‌های پیچیده را به محصولات کاربردی و قابل نگهداری تبدیل می‌کنم. ابزارهای اصلی من TypeScript، Node.js، Bun، React، Redis و MongoDB هستند.",
     cta: "مشاهده پروژه‌ها",
     git: "پروفایل گیت‌هاب",
     stackK: "فناوری‌هایی که با آن‌ها کار می‌کنم",
