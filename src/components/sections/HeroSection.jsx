@@ -31,8 +31,12 @@ export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
             transition={{ delay: 0.4, duration: 0.65 }}
           >
             <span className="hero-name-gradient">
-              <span className="hero-name-first">{rtl ? "محمد" : "Mohammad"}</span>{" "}
-              <span className="hero-name-accent">{rtl ? "افروزه" : "Afrouzeh"}</span>
+              <span className="hero-name-first">
+                {rtl ? "محمد" : "Mohammad"}
+              </span>{" "}
+              <span className="hero-name-accent">
+                {rtl ? "افروزه" : "Afrouzeh"}
+              </span>
             </span>
           </m.h1>
 
@@ -69,7 +73,7 @@ export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
           <div className="hero-intro-row">
             <div className="hero-intro-photo-wrap">
               <Image
-                src="/img/mohammad-afrouzeh.webp"
+                src="/img/mohammad-afrouzeh.png"
                 alt={
                   rtl
                     ? "پرتره محمد افروزه در فضای کاری TECHCODE"
@@ -122,7 +126,8 @@ export default function HeroSection({ t, rtl, dark, heroY, onNavigate }) {
         <CodeEditor />
       </div>
       <div className="scroll-hint">
-        <MousePointer2 size={14} aria-hidden="true" focusable="false" /> {t.scrollHint}
+        <MousePointer2 size={14} aria-hidden="true" focusable="false" />{" "}
+        {t.scrollHint}
       </div>
     </section>
   );

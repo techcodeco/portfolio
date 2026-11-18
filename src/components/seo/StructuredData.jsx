@@ -1,4 +1,9 @@
-import { BRAND_NAME, SITE_NAME, SITE_URL, SOCIAL_PROFILES } from "@/lib/site-config";
+import {
+  BRAND_NAME,
+  SITE_NAME,
+  SITE_URL,
+  SOCIAL_PROFILES,
+} from "@/lib/site-config";
 
 export default function StructuredData({ locale = "en" }) {
   const isPersian = locale === "fa";
@@ -37,7 +42,7 @@ export default function StructuredData({ locale = "en" }) {
         name: SITE_NAME,
         alternateName: ["محمد افروزه"],
         url: SITE_URL,
-        image: `${SITE_URL}/img/mohammad-afrouzeh.webp`,
+        image: `${SITE_URL}/img/mohammad-afrouzeh.png`,
         description,
         jobTitle: isPersian
           ? "برنامه‌نویس وب، توسعه‌دهنده فول‌استک و مهندس بک‌اند"
